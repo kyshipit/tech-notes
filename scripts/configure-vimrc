@@ -1,0 +1,87 @@
+" =============================================
+" 极简无插件 Vim 配置（零报错，保留常用快捷键）
+" =============================================
+
+set nocompatible
+set encoding=utf-8
+set fileencoding=utf-8
+set number
+set cursorline
+set expandtab
+set shiftwidth=4
+set tabstop=4
+set mouse=a
+
+set ignorecase
+set smartcase
+set hlsearch
+set incsearch
+
+set nobackup
+set nowritebackup
+set noswapfile
+set undofile
+set undodir=~/.vim/undodir
+
+" 剪贴板（Linux / WSL 通用）
+set clipboard=unnamedplus
+if executable('xclip')
+    vnoremap <C-c> :w !xclip -sel clip<CR><CR>
+    nnoremap <C-v> :r !xclip -sel clip -o<CR>
+else
+    vnoremap <C-c> "+y
+    nnoremap <C-v> "+p
+endif
+
+" 主题（使用内置暗色主题）
+syntax on
+set background=dark
+colorscheme desert   " 绝对不会报错
+
+" 状态栏
+set laststatus=2
+set statusline=%f%m%r%h%w%=[%y][%{&enc}][%l,%c][%p%%]
+
+" ------------------------- 快捷键（保留原习惯）-------------------------
+let mapleader = ' '
+
+" 窗口导航（Ctrl + hjkl）
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" 文件操作
+nnoremap <leader>w :w<CR>
+nnoremap <leader>q :q<CR>
+nnoremap <leader>qq :q!<CR>
+nnoremap <leader>wq :wq<CR>
+nnoremap <leader>s :w<CR>
+
+" 清除搜索高亮
+nnoremap <leader>h :nohlsearch<CR>
+
+" 新建/关闭/重新加载文件
+nnoremap <leader>fn :enew<CR>
+nnoremap <leader>fc :close<CR>
+nnoremap <leader>fr :e!<CR>
+
+" 标签页
+nnoremap <leader>tn :tabnew<CR>
+nnoremap <leader>tc :tabclose<CR>
+nnoremap <leader>tl :tabnext<CR>
+nnoremap <leader>th :tabprevious<CR>
+
+" 禁用 a 和 s 键（与原先完全一致）
+nnoremap a <Nop>
+nnoremap s <Nop>
+vnoremap a <Nop>
+vnoremap s <Nop>
+
+" 自动命令
+autocmd VimEnter * if !isdirectory(expand('~/.vim/undodir')) | call mkdir(expand('~/.vim/undodir'), 'p') | endif
+autocmd FileType python,lua,javascript,typescript,cpp,c setlocal shiftwidth=4 tabstop=4 softtabstop=4
+
+" 界面美化
+highlight VertSplit ctermfg=8 ctermbg=0
+set fillchars=vert:│

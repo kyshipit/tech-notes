@@ -182,7 +182,7 @@ sudo chroot "$ROOTFS" /debootstrap/debootstrap --second-stage
 
 代价：pwconv 永久返回 0，/etc/shadow 和 /etc/passwd 不同步。需要在目标系统首次启动后执行一次真实的 pwconv。
 
-## 4\.3 方案三：修改 systemd 源码（唯一真正的修复）
+## 4\.3 方案三：修改 systemd 源码
 
 Launchpad Bug \#2069555 中明确指出：
 

@@ -110,20 +110,20 @@ else
 
     echo "[1.9] 创建摄像头环境变量"
     sudo tee ${UBUNTU_ROOT}/etc/profile.d/rk-camera.sh > /dev/null << 'EOF'
-export GST_V4L2SRC_DEFAULT_DEVICE=/dev/video-camera0
-export GST_V4L2_PREFERRED_FOURCC=NV12:YU12:NV16:YUY2
-export GST_VIDEO_CONVERT_PREFERRED_FORMAT=NV12:NV16:I420:YUY2
-export GST_V4L2_USE_LIBV4L2=1
-export GST_V4L2SRC_RK_DEVICES=_mainpath:_selfpath:_bypass:_scale
-EOF
+    export GST_V4L2SRC_DEFAULT_DEVICE=/dev/video-camera0
+    export GST_V4L2_PREFERRED_FOURCC=NV12:YU12:NV16:YUY2
+    export GST_VIDEO_CONVERT_PREFERRED_FORMAT=NV12:NV16:I420:YUY2
+    export GST_V4L2_USE_LIBV4L2=1
+    export GST_V4L2SRC_RK_DEVICES=_mainpath:_selfpath:_bypass:_scale
+    EOF
     sudo chmod 644 ${UBUNTU_ROOT}/etc/profile.d/rk-camera.sh
 
     mark_step_done "step1_copy_buildroot"
     echo "步骤1完成"
-fi
-
-echo ""
-
+    fi
+    
+    echo ""
+    
 # ================================================================
 # 步骤 2: 挂载虚拟文件系统
 # ================================================================
@@ -201,7 +201,8 @@ echo "  [3.4] 安装基础包"
 apt install -y vim net-tools openssh-server sudo systemd locales \
     wpasupplicant wireless-tools \
     xfce4 xfce4-goodies lightdm \
-    alsa-utils pulseaudio v4l-utils
+    alsa-utils pulseaudio v4l-utils \
+    dbus-x11
 
 echo "  [3.5] 安装 ROS2 前置工具"
 apt install -y curl gnupg lsb-release software-properties-common
@@ -241,8 +242,11 @@ cat > /etc/lightdm/lightdm.conf << 'EOF'
 autologin-user=root
 autologin-user-timeout=0
 allow-root=true
+user-session=xfce
 greeter-session=lightdm-gtk-greeter
 EOF
+# 将 root 加入 nopasswdlogin 组
+usermod -a -G nopasswdlogin root
 
 echo "  [3.14] 配置 SSH"
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
@@ -356,23 +360,6 @@ WantedBy=multi-user.target
 EOF
 ln -sf /etc/systemd/system/usbdevice.service /etc/systemd/system/multi-user.target.wants/usbdevice.service
 
-cat > /etc/systemd/system/camera-stream.service << 'EOF'
-[Unit]
-Description=Camera stream trigger for ISP 3A
-After=multi-user.target
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/gst-launch-1.0 v4l2src device=/dev/video-camera0 ! video/x-raw,width=1920,height=1080,format=NV12 ! fakesink -e
-Restart=always
-RestartSec=5
-User=root
-
-[Install]
-WantedBy=multi-user.target
-EOF
-systemctl enable camera-stream.service
-
 echo "  [3.21] 创建首次开机扩容脚本"
 cat > /usr/local/bin/firstboot-setup.sh << 'EOF'
 #!/bin/sh
@@ -425,22 +412,44 @@ echo "/dev/mmcblk0p8  /userdata  ext4  defaults,nofail,noatime  0  2" >> /etc/fs
 echo "  [3.23] 安装 camera-engine-rkaiq"
 dpkg -i /tmp/camera_engine_rkaiq_rk3588_arm64.deb
 apt-get install -f -y
-
-# ================================================================
-# 修复2：修复 rkaiq_3A.service 权限（从 666 改为 644）
-# ================================================================
-if [ -f /usr/lib/systemd/system/rkaiq_3A.service ]; then
-    chmod 644 /usr/lib/systemd/system/rkaiq_3A.service
-fi
 systemctl enable rkaiq_3A.service
-
-# ================================================================
-# 修复3：删除不存在的 rkaiq-3a.service（原脚本中这一行导致失败）
-# ================================================================
-# systemctl enable rkaiq-3a.service  # 已删除，服务不存在
 
 echo "  [3.24] 清理临时文件"
 rm -f /tmp/camera_engine_rkaiq_rk3588_arm64.deb
+
+echo "  [3.25] 配置 ALSA 默认声卡"
+cat > /etc/asound.conf << 'EOF'
+pcm.!default {
+    type hw
+    card 1
+}
+ctl.!default {
+    type hw
+    card 1
+}
+EOF
+
+echo "  [3.26] 配置音频开关开机自启"
+cat > /etc/rc.local << 'EOF'
+#!/bin/sh -e
+amixer -c 1 cset "name='OUT1 Switch'" on
+amixer -c 1 cset "name='OUT2 Switch'" on
+exit 0
+EOF
+chmod +x /etc/rc.local
+
+echo "  [3.27] 禁用 Xfce 电源管理和屏保"
+# 移除 light-locker 和 xfce4-screensaver（如果存在）
+apt remove -y light-locker xfce4-screensaver 2>/dev/null || true
+# 禁用 Xfce 电源管理器的锁屏
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/lock-screen-suspend-hibernate --create -t bool -s false 2>/dev/null || true
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/lock-screen-on-sleep --create -t bool -s false 2>/dev/null || true
+# 设置熄屏时间为 0（永不）
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-ac --create -t uint -s 0 2>/dev/null || true
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-battery --create -t uint -s 0 2>/dev/null || true
+# 禁用 xfce4-screensaver（如果存在）
+xfconf-query -c xfce4-screensaver -p /xfce4-screensaver/lock-enabled --create -t bool -s false 2>/dev/null || true
+xfconf-query -c xfce4-screensaver -p /xfce4-screensaver/idle-timeout --create -t uint -s 0 2>/dev/null || true
 
 echo "chroot 配置完成"
 CHROOT_EOF
