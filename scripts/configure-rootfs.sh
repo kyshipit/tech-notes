@@ -6,9 +6,10 @@ BUILDROOT_DIR="$HOME/atk_dlrk3588_linux6.1/buildroot/output/alientek_rk3588/targ
 KERNEL_VERSION="6.1.141"
 RKAIQ_DEB="$HOME/atk_dlrk3588_linux6.1/debian/packages/arm64/rkaiq/camera_engine_rkaiq_rk3588_arm64.deb"
 
-# ================================================================
-# 修复1：标记文件从 /tmp 改为持久化目录
-# ================================================================
+
+
+# 步骤标记目录（位于宿主机，用于记录已完成的步骤，避免重复执行）
+
 STEP_DIR="$HOME/.ubuntu_rootfs_steps"
 mkdir -p "$STEP_DIR"
 
@@ -170,12 +171,7 @@ else
     echo "步骤 3: chroot 内系统配置"
     echo "================================================================"
 
-    # ---------- 在宿主机下载 ROS 密钥（避免 qemu 模拟 curl 卡死） ----------
-    echo "[预下载] ROS 密钥（宿主机）"
-    if [ ! -f /tmp/ros.key ]; then
-        wget -O /tmp/ros.key https://raw.githubusercontent.com/ros/rosdistro/master/ros.key
-    fi
-    sudo cp /tmp/ros.key ${UBUNTU_ROOT}/usr/share/keyrings/ros-archive-keyring.gpg
+
 
     sudo chroot ${UBUNTU_ROOT} /bin/bash << 'CHROOT_EOF'
 set -e
@@ -204,31 +200,24 @@ apt install -y vim net-tools openssh-server sudo systemd locales \
     alsa-utils pulseaudio v4l-utils \
     dbus-x11
 
-echo "  [3.5] 安装 ROS2 前置工具"
-apt install -y curl gnupg lsb-release software-properties-common
-add-apt-repository universe -y
 
-echo "  [3.6] 配置 ROS2 源（密钥已在宿主机预下载）"
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu noble main" | tee /etc/apt/sources.list.d/ros2.list
-apt update
-
-echo "  [3.7] 安装开发工具"
+echo "  [3.5] 安装开发工具"
 apt install -y python3-pip git cmake python3-dev python3-numpy python3-yaml python3-colcon-common-extensions
 
-echo "  [3.8] 安装 GStreamer 工具"
+echo "  [3.6] 安装 GStreamer 工具"
 apt install -y gstreamer1.0-tools gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly
 
-echo "  [3.9] 安装 USB Gadget 依赖"
+echo "  [3.7] 安装 USB Gadget 依赖"
 apt install -y psmisc
 
-echo "  [3.10] 配置 DNS"
+echo "  [3.8] 配置 DNS"
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 echo "nameserver 114.114.114.114" >> /etc/resolv.conf
 
-echo "  [3.11] 清空 root 密码"
+echo "  [3.9] 清空 root 密码"
 passwd -d root
 
-echo "  [3.12] 配置串口自动登录"
+echo "  [3.10] 配置串口自动登录"
 mkdir -p /etc/systemd/system/serial-getty@ttyFIQ0.service.d
 cat > /etc/systemd/system/serial-getty@ttyFIQ0.service.d/override.conf << 'EOF'
 [Service]
@@ -236,7 +225,7 @@ ExecStart=
 ExecStart=-/sbin/agetty -a root --keep-baud 115200 %I $TERM
 EOF
 
-echo "  [3.13] 配置 LightDM 自动登录"
+echo "  [3.11] 配置 LightDM 自动登录"
 cat > /etc/lightdm/lightdm.conf << 'EOF'
 [Seat:*]
 autologin-user=root
@@ -248,7 +237,7 @@ EOF
 # 将 root 加入 nopasswdlogin 组
 usermod -a -G nopasswdlogin root
 
-echo "  [3.14] 配置 SSH"
+echo "  [3.12] 配置 SSH"
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 sed -i 's/^#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 sed -i 's/^#PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
@@ -259,19 +248,19 @@ grep -q "^PasswordAuthentication" /etc/ssh/sshd_config || echo "PasswordAuthenti
 sed -i '/^DenyUsers/d' /etc/ssh/sshd_config
 sed -i '/^DenyGroups/d' /etc/ssh/sshd_config
 
-echo "  [3.15] 配置主机名"
+echo "  [3.13] 配置主机名"
 echo "ATK-DLRK3588" > /etc/hostname
 sed -i '/127.0.1.1/d' /etc/hosts
 echo "127.0.1.1 ATK-DLRK3588" >> /etc/hosts
 
-echo "  [3.16] 配置 root 登录目录"
+echo "  [3.14] 配置 root 登录目录"
 echo 'cd /' >> /root/.profile
 echo 'export PS1="\\u@\\h:\\w\\$ "' >> /root/.bashrc
 
-echo "  [3.17] 屏蔽网络等待服务"
+echo "  [3.15] 屏蔽网络等待服务"
 ln -sf /dev/null /etc/systemd/system/NetworkManager-wait-online.service
 
-echo "  [3.18] 配置 bashrc"
+echo "  [3.16] 配置 bashrc"
 cat > /root/.bashrc << 'EOF'
 if [[ "$(tty)" == "/dev/ttyFIQ0" ]]; then
     stty -ixon -ixoff
@@ -303,7 +292,7 @@ if ! shopt -oq posix; then
 fi
 EOF
 
-echo "  [3.19] 禁用休眠"
+echo "  [3.17] 禁用休眠"
 cat > /etc/systemd/system/disable-suspend.service << 'EOF'
 [Unit]
 Description=Disable all suspend and cpuidle
@@ -342,7 +331,7 @@ ln -sf /etc/systemd/system/disable-suspend.service /etc/systemd/system/multi-use
 echo "IdleAction=ignore" >> /etc/systemd/logind.conf
 echo "IdleActionSec=0" >> /etc/systemd/logind.conf
 
-echo "  [3.20] 创建 systemd 服务"
+echo "  [3.18] 创建 systemd 服务"
 cat > /etc/systemd/system/usbdevice.service << 'EOF'
 [Unit]
 Description=Rockchip USB Gadget Service
@@ -360,7 +349,7 @@ WantedBy=multi-user.target
 EOF
 ln -sf /etc/systemd/system/usbdevice.service /etc/systemd/system/multi-user.target.wants/usbdevice.service
 
-echo "  [3.21] 创建首次开机扩容脚本"
+echo "  [3.19] 创建首次开机扩容脚本"
 cat > /usr/local/bin/firstboot-setup.sh << 'EOF'
 #!/bin/sh
 FLAG_FILE="/var/lib/firstboot-done"
@@ -405,19 +394,19 @@ WantedBy=multi-user.target
 EOF
 ln -sf /etc/systemd/system/firstboot-setup.service /etc/systemd/system/multi-user.target.wants/firstboot-setup.service
 
-echo "  [3.22] 配置 /userdata 挂载点"
+echo "  [3.20] 配置 /userdata 挂载点"
 mkdir -p /userdata
 echo "/dev/mmcblk0p8  /userdata  ext4  defaults,nofail,noatime  0  2" >> /etc/fstab
 
-echo "  [3.23] 安装 camera-engine-rkaiq"
+echo "  [3.21] 安装 camera-engine-rkaiq"
 dpkg -i /tmp/camera_engine_rkaiq_rk3588_arm64.deb
 apt-get install -f -y
 systemctl enable rkaiq_3A.service
 
-echo "  [3.24] 清理临时文件"
+echo "  [3.22] 清理临时文件"
 rm -f /tmp/camera_engine_rkaiq_rk3588_arm64.deb
 
-echo "  [3.25] 配置 ALSA 默认声卡"
+echo "  [3.23] 配置 ALSA 默认声卡"
 cat > /etc/asound.conf << 'EOF'
 pcm.!default {
     type hw
@@ -429,7 +418,7 @@ ctl.!default {
 }
 EOF
 
-echo "  [3.26] 配置音频开关开机自启"
+echo "  [3.24] 配置音频开关开机自启"
 cat > /etc/rc.local << 'EOF'
 #!/bin/sh -e
 amixer -c 1 cset "name='OUT1 Switch'" on
@@ -438,7 +427,7 @@ exit 0
 EOF
 chmod +x /etc/rc.local
 
-echo "  [3.27] 禁用 Xfce 电源管理和屏保"
+echo "  [3.25] 禁用 Xfce 电源管理和屏保"
 # 移除 light-locker 和 xfce4-screensaver（如果存在）
 apt remove -y light-locker xfce4-screensaver 2>/dev/null || true
 # 禁用 Xfce 电源管理器的锁屏
