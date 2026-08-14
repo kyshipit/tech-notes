@@ -200,13 +200,12 @@ Launchpad Bug \#2069555 中明确指出：
 
 |来源|链接|状态|
 |---|---|---|
-|Ubuntu Launchpad|Bug \#2069555|Confirmed|
-|QEMU|Bug \#1893010|New|
-|Debian|Bug \#1126304|fixed\-upstream|
-|systemd GitHub|Issue \#29512|公开讨论|
-|Microsoft/WSL|Issue \#10397|公开讨论|
-|GitHub Workaround|InfoXMax/linux\-apt\-fix\-broken\-issue|社区方案|
+|Ubuntu Launchpad|[Bug #2069555](https://bugs.launchpad.net/ubuntu/+source/systemd/+bug/2069555)|Confirmed|
+|QEMU|[Bug #1893010](https://bugs.launchpad.net/qemu/+bug/1893010)|New|
+|Debian|[Bug #1126304](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1126304)|fixed‑upstream|
+|systemd GitHub|[Issue #29512](https://github.com/systemd/systemd/issues/29512)|公开讨论|
+|Microsoft/WSL|[Issue #10397](https://github.com/microsoft/WSL/issues/10397)|公开讨论|
+|GitHub Workaround|[InfoXMax/linux‑apt‑fix‑broken‑issue](https://github.com/InfoXMax/linux-apt-fix-broken-issue)|社区方案|
+
 
 核心结论：该问题的根源是 systemd v254\+ 硬性要求 F\_OFD\_SETLKW，而 qemu\-user\-static 不支持该锁。systemd 和 QEMU 两边都未修复此问题，只能通过 workaround 绕过。升级 QEMU 在 Docker overlay2 环境下无效，在宿主机直接 chroot 环境下可能有效，但需验证文件系统类型。
-
-

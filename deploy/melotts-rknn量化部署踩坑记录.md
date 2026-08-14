@@ -730,7 +730,7 @@ python -c "import onnx; m=onnx.load('model.onnx'); [print(n.name) for n in m.gra
    └── 必要时放弃 INT8，使用 FP16
 ```
 
-### 8.7 MeloTTS 特有知识（不可迁移）🔴
+### 8.6 MeloTTS 特有知识（不可迁移）🔴
 
 以下知识**仅适用于本 MeloTTS 项目**，不通用：
 
@@ -744,7 +744,7 @@ python -c "import onnx; m=onnx.load('model.onnx'); [print(n.name) for n in m.gra
 | 输出长度固定 [1,1,262144] | MeloTTS + tracing 导出特有问题 |
 | MeCab + unidic 依赖 | TTS 多语言支持特有 |
 
-### 8.8 关键术语
+### 8.7 关键术语
 
 | 术语 | 一句话解释 |
 | -- | -- |

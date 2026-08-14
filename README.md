@@ -1,21 +1,21 @@
-# 📚 索引
+# 📚 导航
 
-> 文档导航目录，快速跳转各模块
+> 目录导航，快速跳转各模块
 
 ---
 
 ## 📋 目录
-- [🧠 AI](#-ai)
-- [📦 移植](#-移植)
-- [🔩 模型量化部署](#-模型量化部署)
-- [📡 ROS2](#-ros2)
+- [🤖 AI](#-ai)
+- [🔄 移植](#-移植)
+- [🚀 量化部署](#-量化部署)
+- [🦾 ROS2](#-ros2)
 - [🛠 工具](#-工具)
 - [📜 脚本](#-脚本)
-- [💻 个人仓库](#-个人仓库)
+- [🏠 个人仓](#-个人仓)
 
 ---
 
-## 🧠 AI
+## 🤖 AI
 > 分类：AI 全链路 | 知识体系 | Agent 架构
 
 - [AI 全链路知识体系](./ai/AI全链路知识体系.md)
@@ -26,6 +26,7 @@
 
 ---
 
+## 🔄 移植
 > 分类：交叉编译 | Rootfs 构建 | QEMU chroot | 驱动移植 | 问题排查
 
 - [Failed to take /etc/passwd lock: Invalid argument](./port/qemu构建rootfs时systemd锁问题修复.md)
@@ -45,7 +46,7 @@
 
 ---
 
-## 🔩 模型量化部署
+## 🚀 量化部署
 > 分类：模型转换 | 量化部署 | RKNN | ONNX | NPU 推理
 
 - [MeloTTS RKNN 量化部署踩坑记录](./deploy/melotts-rknn量化部署踩坑记录.md)
@@ -55,7 +56,7 @@
 
 ---
 
-## 📡 ROS2
+## 🦾 ROS2
 > 分类：ROS2 | WSL2 | 跨机通信 | Fast-DDS
 
 - [WSL2 ROS2 跨机通信问题](./ros/WSL2-ROS2跨机通信问题.md)
@@ -63,6 +64,10 @@
   > WSL2 Ubuntu20.04/22.04/24.04 + ROS2 Foxy/Galactic/Humble/Rolling，跨机通信无法发现节点
   > 排查 Fast-DDS 多播发现机制、网络接口绑定、环境变量配置等问题，最终解决方案：统一 DDS 域 ID + 强制子网内多播发现 + 指定网卡 eth0
 
+- [ROS2 图像卡顿 WiFi QoS 与 WSL2 排错](./ros/ROS2图像卡顿WiFi_QoS与WSL2排错.md)
+  `#ROS2 #WiFi #QoS #WSL2 #图像卡顿 #调试`
+  > ROS2 Jazzy + WSL2 Ubuntu 24.04，图像传输卡顿、丢帧、命令卡死——排查了 WiFi 丢包率、压缩话题、异步编码、QoS 配置。
+  > 最终通过三项措施解决：① 发布端启用压缩话题；② 将编码移至独立线程实现异步发布；③ 订阅端显式指定 BEST_EFFORT QoS。
 ---
 
 
@@ -94,7 +99,7 @@
 
 ---
 
-## 💻 个人仓库
+## 🏠 个人仓
 > 开源项目链接
 
 - [eai-rk3588](https://github.com/kyshipit/eai-rk3588) — 基于插件的 RK3588 边缘推理平台，多线程流水线、RKNN 适配器、RKLLM 对话、协调器驱动的多槽位激活
