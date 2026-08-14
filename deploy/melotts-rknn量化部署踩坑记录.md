@@ -621,21 +621,7 @@ Encoder 的关键区别在于：sdp_ratio 是**用户传入的外部标量**，�
 
 > **最终建议**：用 INT8 量化模型（67MB）+ 后处理裁剪播放快速上线。若未来需要更低延迟，评估自回归 TTS 架构替换。
 
-### 8.3 环境版本
-
-| 组件 | 版本 |
-| -- | -- |
-| RKNN-Toolkit2 | 2.3.2 |
-| ONNX | 1.14.0+ |
-| Python | 3.9 / 3.11 |
-| 目标平台 | RK3588 |
-
-**版本兼容性注意事项**：
-- onnxsim：不同版本对动态形状的处理行为不同
-- rknn-toolkit2：2.3.2 不支持 proposal=True 某些功能
-- Python 环境：不同项目的依赖可能冲突，建议用虚拟环境
-
-### 8.4 常见错误速查
+### 8.3 常见错误速查
 
 | 错误信息 | 根本原因 |
 | -- | -- |
@@ -646,7 +632,7 @@ Encoder 的关键区别在于：sdp_ratio 是**用户传入的外部标量**，�
 | ElementwiseLogical unsupported | INT8 与 FP32 类型冲突 |
 | std::out_of_range（18446744073709551615） | 动态模型未设置真实维度，负数溢出为超大 size_t |
 
-### 8.5 关键文件与工具
+### 8.4 关键文件与工具
 
 | 文件/工具 | 说明 |
 | -- | -- |
@@ -669,7 +655,7 @@ Encoder 的关键区别在于：sdp_ratio 是**用户传入的外部标量**，�
 | 校准数据 NaN | 随机生成的数据不稳定 |
 | 量化 input num 不匹配 | 校准数据文件数量与模型输入数量不一致 |
 
-### 8.6 可迁移通用技能 🟢
+### 8.5 可迁移通用技能 🟢
 
 #### ONNX 导出通用技能
 
@@ -758,7 +744,7 @@ python -c "import onnx; m=onnx.load('model.onnx'); [print(n.name) for n in m.gra
 | 输出长度固定 [1,1,262144] | MeloTTS + tracing 导出特有问题 |
 | MeCab + unidic 依赖 | TTS 多语言支持特有 |
 
-### 8.8 一句话总结关键术语
+### 8.8 关键术语
 
 | 术语 | 一句话解释 |
 | -- | -- |
@@ -777,3 +763,14 @@ python -c "import onnx; m=onnx.load('model.onnx'); [print(n.name) for n in m.gra
 | ScatterND | 根据索引更新张量，形状构造工具 |
 | Expand | 广播张量到目标形状 |
 | SDP | 时长预测器，Encoder 内部模块 |
+
+## 9 附录
+
+###  项目仓库链接
+
+- tech‑notes：<https://github.com/kyshipit/tech-notes>
+- MeloTTS：<https://github.com/kyshipit/MeloTTS>
+
+###  相关文档
+
+- [tech-notes](https://github.com/kyshipit/tech-notes/blob/main/deploy/melotts-rknn量化部署踩坑记录.md) — MeloTTS ONNX 导出 + RKNN 部署（RK3588），INT8 量化和部署

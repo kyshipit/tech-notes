@@ -7,7 +7,8 @@
 ## 📋 目录
 - [🧠 AI](#-ai)
 - [📦 移植](#-移植)
-- [🔩  模型量化部署](#-模型量化部署)
+- [🔩 模型量化部署](#-模型量化部署)
+- [📡 ROS2](#-ros2)
 - [🛠 工具](#-工具)
 - [📜 脚本](#-脚本)
 - [💻 个人仓库](#-个人仓库)
@@ -25,7 +26,6 @@
 
 ---
 
-## 📦 移植
 > 分类：交叉编译 | Rootfs 构建 | QEMU chroot | 驱动移植 | 问题排查
 
 - [Failed to take /etc/passwd lock: Invalid argument](./port/qemu构建rootfs时systemd锁问题修复.md)
@@ -54,6 +54,17 @@
   > 最终方案：FP16 Encoder + INT8 Decoder，推理时间 1.8–2.2s，模型体积 129MB→67MB
 
 ---
+
+## 📡 ROS2
+> 分类：ROS2 | WSL2 | 跨机通信 | Fast-DDS
+
+- [WSL2 ROS2 跨机通信问题](./ros/WSL2-ROS2跨机通信问题.md)
+  `#WSL2 #ROS2 #Fast-DDS #跨机通信 #多播发现`
+  > WSL2 Ubuntu20.04/22.04/24.04 + ROS2 Foxy/Galactic/Humble/Rolling，跨机通信无法发现节点
+  > 排查 Fast-DDS 多播发现机制、网络接口绑定、环境变量配置等问题，最终解决方案：统一 DDS 域 ID + 强制子网内多播发现 + 指定网卡 eth0
+
+---
+
 
 ## 🛠 工具
 > 分类：调试工具 | 反汇编 | 逆向分析

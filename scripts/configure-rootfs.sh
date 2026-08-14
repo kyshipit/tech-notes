@@ -6,10 +6,7 @@ BUILDROOT_DIR="$HOME/atk_dlrk3588_linux6.1/buildroot/output/alientek_rk3588/targ
 KERNEL_VERSION="6.1.141"
 RKAIQ_DEB="$HOME/atk_dlrk3588_linux6.1/debian/packages/arm64/rkaiq/camera_engine_rkaiq_rk3588_arm64.deb"
 
-
-
 # 步骤标记目录（位于宿主机，用于记录已完成的步骤，避免重复执行）
-
 STEP_DIR="$HOME/.ubuntu_rootfs_steps"
 mkdir -p "$STEP_DIR"
 
@@ -418,14 +415,24 @@ ctl.!default {
 }
 EOF
 
-echo "  [3.24] 配置音频开关开机自启"
-cat > /etc/rc.local << 'EOF'
-#!/bin/sh -e
-amixer -c 1 cset "name='OUT1 Switch'" on
-amixer -c 1 cset "name='OUT2 Switch'" on
-exit 0
+echo "  [3.24] 配置音频开机自启服务"
+cat > /etc/systemd/system/fix-audio.service << 'EOF'
+[Unit]
+Description=Fix ES8388 audio
+After=sound.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/amixer -c 1 cset "name='OUT1 Switch'" on
+ExecStart=/usr/bin/amixer -c 1 cset "name='OUT2 Switch'" on
+ExecStart=/usr/bin/amixer -c 1 sset "PCM" 192
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
 EOF
-chmod +x /etc/rc.local
+
+systemctl enable fix-audio.service
 
 echo "  [3.25] 禁用 Xfce 电源管理和屏保"
 # 移除 light-locker 和 xfce4-screensaver（如果存在）
