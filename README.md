@@ -166,4 +166,4 @@
 
 ## 📄 许可证
 
-笔记内容采用 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)，代码/脚本遵循 [MIT License](LICENSE)。
+笔记内容采用 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)，代码/脚本遵循 [MIT License](LICENSE)。
