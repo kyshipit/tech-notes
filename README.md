@@ -79,6 +79,10 @@
   > ES8388 芯片内部 OUT1/OUT2 输出级开关默认关闭，导致信号无法到达扬声器。
   > Buildroot 通过 UCM 自动开启，Ubuntu 需手动 amixer 开启或配置开机自启。
 
+- [RK3588 移植 Noble 版本 rootfs](./port/rk3588移植noble版本rootfs.md)
+  `#RK3588 #Ubuntu24.04 #rootfs`
+  > RK3588 构建与移植 Ubuntu 24.04 rootfs ，支持 QEMU chroot、驱动移植。
+
 <p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
 
 ---
