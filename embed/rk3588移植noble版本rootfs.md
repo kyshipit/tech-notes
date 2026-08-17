@@ -9,13 +9,9 @@ sudo apt install debootstrap qemu-user-static binfmt-support rsync -y
 
 ## 二、debootstrap --foreign
 
-
-
-
 - 说明：noble 是 Ubuntu 24.04 的版本代号，22.04 为 jammy
 
 ```
-
 mkdir-p ~/ubuntu_rootfs
 
 sudo debootstrap --foreign --arch=arm64 noble ~/ubuntu_rootfs http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/

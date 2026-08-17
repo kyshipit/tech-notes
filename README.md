@@ -10,9 +10,10 @@
 
 <p>
   <a href="#-ai">AI</a> ·
-  <a href="#-嵌入式">嵌入式</a> ·
   <a href="#-量化部署">量化部署</a> ·
   <a href="#-ros2">ROS2</a> ·
+  <a href="#-嵌入式">嵌入式</a> ·
+  <a href="#-IoT">IoT</a> ·
   <a href="#-工具">工具</a> ·
   <a href="#-脚本">脚本</a> ·
   <a href="#-个人仓">个人仓</a>
@@ -32,15 +33,15 @@
 <table align="center">
   <tr>
     <td nowrap align="center"><a href="#-ai"><b>🤖 AI</b></a></td>
-    <td nowrap align="center"><a href="#-嵌入式"><b>🔄 嵌入式</b></a></td>
     <td nowrap align="center"><a href="#-量化部署"><b>🚀 量化部署</b></a></td>
     <td nowrap align="center"><a href="#-ros2"><b>🦾 ROS2</b></a></td>
+    <td nowrap align="center"><a href="#-嵌入式"><b>🔄 嵌入式</b></a></td>
   </tr>
   <tr>
+    <td nowrap align="center"><a href="#-IoT"><b>📡 IoT</b></a></td>
     <td nowrap align="center"><a href="#-工具"><b>🛠 工具</b></a></td>
     <td nowrap align="center"><a href="#-脚本"><b>📜 脚本</b></a></td>
     <td nowrap align="center"><a href="#-个人仓"><b>🏠 个人仓</b></a></td>
-    <td nowrap align="center"><a href="#-其他"><b>📌 其他</b></a></td>
   </tr>
 </table>
 
@@ -48,7 +49,6 @@
 
 <a id="-ai"></a>
 ## 🤖 AI
-
 > 分类：AI 全链路 | 知识体系 | Agent 架构
 
 - [AI 全链路知识体系](./ai/AI全链路知识体系.md)
@@ -61,9 +61,39 @@
 
 ---
 
+<a id="-量化部署"></a>
+## 🚀 量化部署
+> 分类：模型转换 | 量化部署 | RKNN | ONNX | NPU 推理
+
+- [MeloTTS RKNN 量化部署踩坑记录](./deploy/melotts-rknn量化部署踩坑记录.md)
+  `#MeloTTS #RKNN #INT8量化 #ONNX #RK3588 #NPU`
+  > PyTorch → ONNX → RKNN 全流程，含动态维度、假动态、INT8 量化、Less 算子冲突等核心踩坑记录。
+  > 最终方案：FP16 Encoder + INT8 Decoder，推理时间 1.8–2.2s，模型体积 129MB→67MB。
+
+<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+
+---
+
+<a id="-ros2"></a>
+## 🦾 ROS2
+> 分类：ROS2 | WSL2 | 跨机通信 | Fast-DDS
+
+- [WSL2 ROS2 跨机通信问题](./ros/WSL2-ROS2跨机通信问题.md)
+  `#WSL2 #ROS2 #Fast-DDS #跨机通信 #多播发现`
+  > WSL2 Ubuntu20.04/22.04/24.04 + ROS2 Foxy/Galactic/Humble/Rolling，跨机通信无法发现节点。
+  > 排查 Fast-DDS 多播发现机制、网络接口绑定、环境变量配置等问题，最终解决方案：统一 DDS 域 ID + 强制子网内多播发现 + 指定网卡 eth0。
+
+- [ROS2 图像卡顿 WiFi QoS 与 WSL2 排错](./ros/ROS2图像卡顿WiFi_QoS与WSL2排错.md)
+  `#ROS2 #WiFi #QoS #WSL2 #图像卡顿 #调试`
+  > ROS2 Jazzy + WSL2 Ubuntu 24.04，图像传输卡顿、丢帧、命令卡死——排查了 WiFi 丢包率、压缩话题、异步编码、QoS 配置。
+  > 最终通过三项措施解决：① 发布端启用压缩话题；② 将编码移至独立线程实现异步发布；③ 订阅端显式指定 BEST_EFFORT QoS。
+
+<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+
+---
+
 <a id="-嵌入式"></a>
 ## 🔄 嵌入式
-
 > 分类：交叉编译 | Rootfs 构建 | QEMU chroot | 驱动移植 | 问题排查
 
 - [Failed to take /etc/passwd lock: Invalid argument](./port/qemu构建rootfs时systemd锁问题修复.md)
@@ -89,34 +119,14 @@
 
 ---
 
-<a id="-量化部署"></a>
-## 🚀 量化部署
+<a id="-IoT"></a>
+## 📡 IoT
+> 分类：CAN | 蓝牙 | NFC | 其他外设接口
 
-> 分类：模型转换 | 量化部署 | RKNN | ONNX | NPU 推理
-
-- [MeloTTS RKNN 量化部署踩坑记录](./deploy/melotts-rknn量化部署踩坑记录.md)
-  `#MeloTTS #RKNN #INT8量化 #ONNX #RK3588 #NPU`
-  > PyTorch → ONNX → RKNN 全流程，含动态维度、假动态、INT8 量化、Less 算子冲突等核心踩坑记录。
-  > 最终方案：FP16 Encoder + INT8 Decoder，推理时间 1.8–2.2s，模型体积 129MB→67MB。
-
-<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
-
----
-
-<a id="-ros2"></a>
-## 🦾 ROS2
-
-> 分类：ROS2 | WSL2 | 跨机通信 | Fast-DDS
-
-- [WSL2 ROS2 跨机通信问题](./ros/WSL2-ROS2跨机通信问题.md)
-  `#WSL2 #ROS2 #Fast-DDS #跨机通信 #多播发现`
-  > WSL2 Ubuntu20.04/22.04/24.04 + ROS2 Foxy/Galactic/Humble/Rolling，跨机通信无法发现节点。
-  > 排查 Fast-DDS 多播发现机制、网络接口绑定、环境变量配置等问题，最终解决方案：统一 DDS 域 ID + 强制子网内多播发现 + 指定网卡 eth0。
-
-- [ROS2 图像卡顿 WiFi QoS 与 WSL2 排错](./ros/ROS2图像卡顿WiFi_QoS与WSL2排错.md)
-  `#ROS2 #WiFi #QoS #WSL2 #图像卡顿 #调试`
-  > ROS2 Jazzy + WSL2 Ubuntu 24.04，图像传输卡顿、丢帧、命令卡死——排查了 WiFi 丢包率、压缩话题、异步编码、QoS 配置。
-  > 最终通过三项措施解决：① 发布端启用压缩话题；② 将编码移至独立线程实现异步发布；③ 订阅端显式指定 BEST_EFFORT QoS。
+- [CAN UDS 车辆通信诊断技术文档](./drivers/can_uds车载通信诊断技术文档.md)
+  `#CAN #UDS #ISO14229 #ISO15765 #诊断协议`
+  > CAN 总线通信原理、UDS 协议栈、ISO14229/ISO15765 标准、诊断服务 SID、子功能 SubFunction、否定响应码 NRC。
+  > 车辆诊断工具与 ECU 通信流程，UDS 请求/响应报文格式，常用诊断服务解析。
 
 <p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
 
@@ -124,7 +134,6 @@
 
 <a id="-工具"></a>
 ## 🛠 工具
-
 > 分类：调试工具 | 反汇编 | 逆向分析
 
 - [GDB 调试 + Ghidra 反汇编](./tools/gdb-ghidra.md)
@@ -138,7 +147,6 @@
 
 <a id="-脚本"></a>
 ## 📜 脚本
-
 > 项目辅助构建脚本与环境配置
 
 - [configure-rootfs.sh](./scripts/configure-rootfs.sh)
@@ -160,20 +168,10 @@
 
 <a id="-个人仓"></a>
 ## 🏠 个人仓
-
 > 开源项目链接
 
 - [eai-rk3588](https://github.com/kyshipit/eai-rk3588) — 基于插件的 RK3588 边缘推理平台，多线程流水线、RKNN 适配器、RKLLM 对话、协调器驱动的多槽位激活
 - [MeloTTS](https://github.com/kyshipit/MeloTTS) — MeloTTS ONNX 导出 + RKNN 部署（RK3588），INT8 量化和部署
-
-<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
-
----
-
-<a id="-其他"></a>
-## 📌 其他
-
-> 待补充
 
 <p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
 
