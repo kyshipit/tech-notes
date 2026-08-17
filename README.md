@@ -10,7 +10,7 @@
 
 <p>
   <a href="#-ai">AI</a> ·
-  <a href="#-移植">移植</a> ·
+  <a href="#-嵌入式">嵌入式</a> ·
   <a href="#-量化部署">量化部署</a> ·
   <a href="#-ros2">ROS2</a> ·
   <a href="#-工具">工具</a> ·
@@ -31,14 +31,16 @@
 
 <table align="center">
   <tr>
-    <td nowrap align="center" width="33%"><a href="#-ai"><b>🤖 AI</b></a></td>
-    <td nowrap align="center" width="33%"><a href="#-移植"><b>🔄 移植</b></a></td>
-    <td nowrap align="center" width="33%"><a href="#-量化部署"><b>🚀 量化部署</b></a></td>
+    <td nowrap align="center"><a href="#-ai"><b>🤖 AI</b></a></td>
+    <td nowrap align="center"><a href="#-嵌入式"><b>🔄 嵌入式</b></a></td>
+    <td nowrap align="center"><a href="#-量化部署"><b>🚀 量化部署</b></a></td>
+    <td nowrap align="center"><a href="#-ros2"><b>🦾 ROS2</b></a></td>
   </tr>
   <tr>
-    <td nowrap align="center"><a href="#-ros2"><b>🦾 ROS2</b></a></td>
     <td nowrap align="center"><a href="#-工具"><b>🛠 工具</b></a></td>
+    <td nowrap align="center"><a href="#-脚本"><b>📜 脚本</b></a></td>
     <td nowrap align="center"><a href="#-个人仓"><b>🏠 个人仓</b></a></td>
+    <td nowrap align="center"><a href="#-其他"><b>📌 其他</b></a></td>
   </tr>
 </table>
 
@@ -59,8 +61,8 @@
 
 ---
 
-<a id="-移植"></a>
-## 🔄 移植
+<a id="-嵌入式"></a>
+## 🔄 嵌入式
 
 > 分类：交叉编译 | Rootfs 构建 | QEMU chroot | 驱动移植 | 问题排查
 
@@ -168,6 +170,17 @@
 
 ---
 
+<a id="-其他"></a>
+## 📌 其他
+
+> 待补充
+
+<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+
+---
+
 ## 📄 许可证
 
 笔记内容采用 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)，代码/脚本遵循 [MIT License](LICENSE)。
+
+<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
