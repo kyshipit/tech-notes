@@ -214,4 +214,4 @@ Launchpad Bug \#2069555 中明确指出：
 
 核心结论：该问题的根源是 systemd v254\+ 硬性要求 F\_OFD\_SETLKW，而 qemu\-user\-static 不支持该锁。systemd 和 QEMU 两边都未修复此问题，只能通过 workaround 绕过。
 
-**本次采用的有效方案**：升级宿主机的 QEMU 到 8.0.x 版本（通过 backports PPA）。
+**本次采用的有效方案**：升级宿主机的 QEMU 到 8.0.x 版本。

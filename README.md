@@ -2,11 +2,12 @@
   
 # 技术笔记
 
-> 个人知识沉淀 · 工程实践记录
-
 ![GitHub last commit](https://img.shields.io/github/last-commit/kyshipit/tech-notes?style=flat-square)
 ![GitHub repo size](https://img.shields.io/github/repo-size/kyshipit/tech-notes?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/kyshipit/tech-notes?style=flat-square)
+<a href="https://github.com/kyshipit/tech-notes">
+  <img src="https://img.shields.io/badge/⭐️-给个Star-brightgreen?style=flat-square" alt="给个Star"/>
+</a>
 
 <p>
   <a href="#-ai">AI</a> ·
@@ -24,7 +25,7 @@
 ---
 
 > [!NOTE]
-> 📖 所有笔记按分类整理，每篇独立成文，附带标签便于检索。
+> 📖 嵌入式、AI、机器人、IoT 等领域的技术笔记，持续更新中。
 
 ---
 
@@ -51,7 +52,7 @@
 ## 🤖 AI
 > 分类：AI 全链路 | 知识体系 | Agent 架构
 
-- [AI 全链路知识体系](./ai/AI全链路知识体系.md)
+- [AI 知识体系构造](./ai/AI知识体系构造.md)
   `#AI #Agent #RAG #大模型 #工程化`
   > AI 领域全链路知识体系构造，从底层数学到工业级 Agent 的完整技术栈。
   > 涵盖大脑（大模型）、记忆模块、规划模块、工具调用、Skills、RAG 检索、模型工程化、Agent 工程化等模块。
@@ -96,22 +97,22 @@
 ## 🔄 嵌入式
 > 分类：交叉编译 | Rootfs 构建 | QEMU chroot | 驱动移植 | 问题排查
 
-- [Failed to take /etc/passwd lock: Invalid argument](./port/qemu构建rootfs时systemd锁问题修复.md)
+- [Failed to take /etc/passwd lock: Invalid argument](./embed/qemu构建rootfs时systemd锁问题修复.md)
   `#Ubuntu24.04 #systemd #QEMU #ARM64_rootfs`
   > x86 VMware-Ubuntu20.04 构建 ARM64 Ubuntu 24.04 rootfs 根文件系统时的记录。
   > 解决 systemd v254+ OFD 锁不兼容报错，汇总踩坑记录、多套可落地修复脚本、底层原理分析。
 
-- [RK3588 Ubuntu 移植摄像头显示问题](./port/camera显示问题排查.md)
+- [RK3588 Ubuntu 移植摄像头显示问题](./embed/camera显示问题排查.md)
   `#RK3588 #MIPI #摄像头 #DRM #Ubuntu24.04`
   > ATK-DLRK3588 开发板 + 5.5 寸 MIPI 屏幕，从 Buildroot 移植 Ubuntu 后摄像头画面显示异常。
   > 排查 DRM 显示框架、MIPI DSI 配置、摄像头驱动适配等问题。
 
-- [RK3588 ES8388 音频无声问题](./port/es8388音频无声排查.md)
+- [RK3588 ES8388 音频无声问题](./embed/es8388音频无声排查.md)
   `#RK3588 #ES8388 #音频 #ALSA #Ubuntu24.04`
   > ES8388 芯片内部 OUT1/OUT2 输出级开关默认关闭，导致信号无法到达扬声器。
   > Buildroot 通过 UCM 自动开启，Ubuntu 需手动 amixer 开启或配置开机自启。
 
-- [RK3588 移植 Noble 版本 rootfs](./port/rk3588移植noble版本rootfs.md)
+- [RK3588 移植 Noble 版本 rootfs](./embed/rk3588移植noble版本rootfs.md)
   `#RK3588 #Ubuntu24.04 #rootfs`
   > RK3588 构建与移植 Ubuntu 24.04 rootfs ，支持 QEMU chroot、驱动移植。
 
@@ -123,7 +124,7 @@
 ## 📡 IoT
 > 分类：CAN | 蓝牙 | NFC | 其他外设接口
 
-- [CAN UDS 车辆通信诊断技术文档](./drivers/can_uds车载通信诊断技术文档.md)
+- [CAN UDS 车辆通信诊断技术文档](./iot/can_uds车载通信诊断技术文档.md)
   `#CAN #UDS #ISO14229 #ISO15765 #诊断协议`
   > CAN 总线通信原理、UDS 协议栈、ISO14229/ISO15765 标准、诊断服务 SID、子功能 SubFunction、否定响应码 NRC。
   > 车辆诊断工具与 ECU 通信流程，UDS 请求/响应报文格式，常用诊断服务解析。
@@ -174,6 +175,10 @@
 - [MeloTTS](https://github.com/kyshipit/MeloTTS) — MeloTTS ONNX 导出 + RKNN 部署（RK3588），INT8 量化和部署
 
 <p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+
+---
+
+如果对你有所帮助的话，请点个 Star ⭐ 支持一下，谢谢！
 
 ---
 
