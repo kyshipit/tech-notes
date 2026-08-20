@@ -252,7 +252,7 @@ op_target={'Less': 'cpu'}  # ❌ 错误！Less 是算子类型名，不是输出
 **正确写法要求**：
 - 键必须是 **算子的输出 tensor 名**（不是算子类型名）
 - 输出 tensor 名需要通过 **精度分析（accuracy analysis）** 获取
-- 不存在批量将所有 Less 算子调度至 CPU 的合法写法
+- 官方文档中 op_target 的标准用法是按输出 tensor 名指定，未定义按算子类型名批量指定的写法
 
 **获取正确 tensor 名的方法**：
 1. 精度分析（accuracy analysis）返回结果
@@ -766,11 +766,7 @@ python -c "import onnx; m=onnx.load('model.onnx'); [print(n.name) for n in m.gra
 
 ## 9 附录
 
-###  项目仓库链接
+###  仓库链接
 
 - tech‑notes：<https://github.com/kyshipit/tech-notes>
 - MeloTTS：<https://github.com/kyshipit/MeloTTS>
-
-###  相关文档
-
-- [tech-notes](https://github.com/kyshipit/tech-notes/blob/main/deploy/melotts-rknn量化部署踩坑记录.md) — MeloTTS ONNX 导出 + RKNN 部署（RK3588），INT8 量化和部署
