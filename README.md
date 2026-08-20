@@ -129,6 +129,11 @@
   > CAN 总线通信原理、UDS 协议栈、ISO14229/ISO15765 标准、诊断服务 SID、子功能 SubFunction、否定响应码 NRC。
   > 车辆诊断工具与 ECU 通信流程，UDS 请求/响应报文格式，常用诊断服务解析。
 
+- [蓝牙低功耗通信原理解析](./iot/蓝牙低功耗完整通信原理解析.md)
+  `#BLE #蓝牙 #低功耗 #通信协议 #安全机制`
+  > 蓝牙低功耗通信原理、广播与扫描、连接建立、链路加密、应用认证、指令交互、功耗管理。
+  > 包含 RPA / Replay Attack / Whitelist / IRK / CSRK 等安全机制，Dynamic Interval / OTA A/B Partition 等功耗与容错设计。
+
 <p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
 
 ---
