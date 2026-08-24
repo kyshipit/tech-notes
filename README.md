@@ -146,10 +146,14 @@
 ## 🛠 工具
 > 分类：调试工具 | 反汇编 | 逆向分析
 
-- [GDB 调试 + Ghidra 反汇编](./tools/gdb-ghidra.md)
-  `#GDB #Ghidra #调试 #反汇编 #逆向`
+- [ELF 静态逆向分析](./tools/ELF静态逆向分析.md)
+  `#ELF #静态分析 #逆向 #Ghidra #radare2`
+  > ELF 文件结构、ELF 头、节区表、符号表、重定位表、动态链接表。
+  > 静态分析流程：strings → Ghidra 反编译 → radare2 高级分析 → 重建源代码。
+
+- [GDB 动态调试指南](./tools/GDB动态调试指南.md)
+  `#GDB #调试 #动态分析 #断点 #内存检查`
   > GDB 命令速查表、快速调试流程、内存检查、条件断点、用户自定义命令。
-  > Ghidra 反编译、objdump 反汇编、radare2 高级分析、从反编译重建源代码。
 
 <p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
 
