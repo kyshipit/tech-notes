@@ -72,8 +72,8 @@
 
 - [MeloTTS RKNN 量化部署踩坑记录](./deploy/melotts-rknn量化部署踩坑记录.md)
   `#MeloTTS #RKNN #INT8量化 #ONNX #RK3588 #NPU`
-  > PyTorch → ONNX → RKNN 全流程，含动态维度、假动态、INT8 量化、Less 算子冲突等核心踩坑记录。
-  > 最终方案：FP16 Encoder + INT8 Decoder，推理时间 1.8–2.2s，模型体积 129MB→67MB。
+  > PyTorch → ONNX → RKNN 全流程部署，记录动态维度、假动态、INT8 量化、Less 算子冲突等核心踩坑点。
+  > 最终方案：FP16 Encoder + FP16 Decoder（推荐，音质清晰），INT8 Decoder（备选，体积小但音质有损）。
 
 <p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
 

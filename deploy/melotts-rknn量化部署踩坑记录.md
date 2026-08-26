@@ -4,37 +4,45 @@
 
 ## 一、项目背景
 
-### 1.1 有什么、要做什么、为什么
+### 1.1 项目概述
 
-- **MeloTTS**：一个开源的文本转语音（TTS）模型，基于 PyTorch 深度学习框架实现，基于 VITS/VITS2 架构。
-- **RK3588 开发板**：搭载 NPU（神经网络处理单元）的硬件，专门为 AI 模型设计加速。
-- **目标**：把 MeloTTS 从 PyTorch 格式转换为 RKNN 格式，让它在 NPU 上运行，实现更快的语音合成速度。
-- **为什么需要转换**：PyTorch 模型默认在 CPU/GPU 上运行，RK3588 的 NPU 不能直接运行 PyTorch 模型。翻译链路：**PyTorch → ONNX → RKNN**。
+MeloTTS 是一个基于 PyTorch 实现的开源文本转语音（TTS）模型，底层采用 VITS/VITS2 架构，以高质量语音合成为设计目标。RK3588 开发板搭载了专门为 AI 推理加速的 NPU（神经网络处理单元）。
 
-### 1.2 核心矛盾：架构决定延迟下限
+本项目的目标是将 MeloTTS 从 PyTorch 格式转换为 RKNN 格式，使其能够利用 RK3588 NPU 的硬件加速能力进行推理，从而实现更高效的语音合成。
 
-**MeloTTS 是一个"音质优先"的模型，不是"速度优先"的模型**。它的设计目标是合成高质量语音，不是"跑得飞快"。因此，在 NPU 上推理耗时稳定在 **1.8–2.2 秒**，且与输入文本长短无关。这是架构决定的结果，不是转换失误。
+### 1.2 延迟与音质的权衡
+
+MeloTTS 是一个“音质优先”的 TTS 模型，其 VITS/VITS2 架构为高质量语音合成优化，而非低延迟推理。实测在 RK3588 NPU 上单句推理耗时稳定在 1.8–2.2 秒，且该延迟与输入文本长度无关。这是架构特性决定的，不因模型转换而改变。
+
+本项目记录了完整的转换过程和踩坑经验，包括 ONNX 导出、动态维度处理、RKNN 转换、INT8 量化及校准数据设计等环节，可作为同类 TTS 模型部署到 RK3588 NPU 的参考。
 
 ### 1.3 整体技术路线
 
-text
-
+**通用转换流程：**
 ```
-PyTorch 模型（训练时）
-    ↓ ① 导出 ONNX（配置 dynamic_axes，开启常量折叠）
-ONNX 模型（中间格式，带 dim_param 标记）
-    ↓ ② 可选简化（onnxsim.simplify，可能固化维度）
-优化后的 ONNX
-    ↓ ③ 转换 RKNN（提供动态菜单 dynamic_input）
-RKNN 模型（NPU 指令集，预设形状）
-    ↓ ④ 量化（提供校准数据 dataset）
-量化 RKNN（INT8，更小更快）
-    ↓ 部署到 NPU
+PyTorch 模型
+    ↓   ① onnxsim.simplify()
+    ↓   ② torch.onnx.export()
+ONNX 模型
+    ↓   ③ rknn-toolkit2
+    ↓   ④ 量化（提供校准数据）
+RKNN 模型
+    ↓   ⑤ 部署到 NPU
 ```
 
+**本项目实际执行情况：**
+| 阶段        | 计划                               | 实际结果                                                     |
+| :---------- | :--------------------------------- | :----------------------------------------------------------- |
+| ① 优化模型  | `onnxsim.simplify` 优化模型        | Encoder 被固化为完全静态，Decoder 保留 `dim_param` 标记（元数据动态，实际静态） |
+| ② ONNX 导出 | 配置 `dynamic_axes` 支持动态 shape | `dynamic_axes` 无效，Tracing 机制已固化，回退静态 256        |
+| ③ 转换工具  | 配置 `dynamic_input` 支持多长度    | 多长度失败，锁定单长度 `seq_lens=256`                        |
+| ④ INT8 量化 | 提供校准数据，全模型 INT8          | Encoder 失败（`Less` 算子类型冲突）；Decoder 成功但音质下降  |
 
+最终可用方案：
+- Encoder：FP16 静态（INT8 量化失败）
+- Decoder：FP16 固定长度（INT8 可量化但音质下降，不作为生产推荐）
 
-**为什么需要 ONNX 这一步？** ONNX（Open Neural Network Exchange）是 AI 领域的"通用语言"，几乎所有深度学习框架都能导出 ONNX，几乎所有推理引擎都能读取 ONNX。它充当了 PyTorch 和 RKNN 之间的"翻译中间人"。
+**ONNX 的作用：** ONNX（Open Neural Network Exchange）是 AI 领域的中间格式，几乎所有深度学习框架都能导出 ONNX，几乎所有推理引擎都能读取 ONNX。它充当了 PyTorch 和 RKNN 之间的“翻译中间人”。
 
 ## 二、PyTorch → ONNX 导出
 
@@ -47,40 +55,27 @@ MeloTTS 有多个版本，对比如下：
 | 主分支是否有 ONNX 导出功能 | ❌ 主分支没有                                            | ✅ 有（export_onnx 方法 + export.py 脚本） |
 | 补充说明                   | 有PR #276尝试添加 ONNX支持，但尚未合并 | —                                         |
 | 代码来源                   | [MyShell.ai](https://myshell.ai/) 官方发布              | 从官方 fork 后，由 mmontol 修改           |
-| 维护方                     | [MyShell.ai](https://myshell.ai/) 团队                  | 社区开发者 mmontol                        |
-| 用途                       | 训练、推理、研究                                        | 导出 ONNX 模型                            |
 
-**结论**：必须使用 `mmontol/MeloTTS` 这个社区版。官方仓库主分支只能做推理，暂不支持导出 ONNX（虽然官方曾通过 PR #276 尝试添加该功能，但尚未合并且存在错误）。核心区别：官方仓库主分支是“纯 TTS 引擎”，修改版是“TTS 引擎 + ONNX 导出工具箱”。
+**结论**：必须使用 `mmontol/MeloTTS` 这个社区版。官方仓库主分支只能做推理，暂不支持导出 ONNX（虽然官方曾通过 PR #276 尝试添加该功能，但尚未合并）。核心区别：官方仓库主分支是“纯 TTS 引擎”，修改版是“TTS 引擎 + ONNX 导出工具箱”。
 
 ### 2.2 导出步骤与依赖问题
 
 **环境准备与代码克隆：**
-
-bash
 
 ```
 git clone https://github.com/mmontol/MeloTTS.git
 cd MeloTTS
 ```
 
-
-
 **问题一：RuntimeError: Failed initializing MeCab**
 
-text
-
-```
 原因：MeloTTS 启动时会加载所有语言模块（包括日语），日语需要 mecab 分词器 + unidic 词典
+
 解决：pip install unidic-lite
-```
 
-
-
-**知识点**：MeCab 是日语的词法分析器（分词工具）。MeloTTS 虽然是中文 TTS，但代码会尝试加载所有语言支持。unidic-lite 是轻量版词典，通过 pip 直接安装即可绕过完整下载。
+**注意**：MeCab 是日语的词法分析器（分词工具）。MeloTTS 虽然是中文 TTS，但代码会尝试加载所有语言支持。unidic-lite 是轻量版词典，通过 pip 直接安装即可绕过完整下载。
 
 另外，如果不需要日语支持，可以修改 `melo/text/cleaner.py`，直接删掉 japanese 相关的导入：
-
-python
 
 ```
 from . import chinese, english, chinese_mix, korean, french, spanish
@@ -88,11 +83,7 @@ language_module_map = {"ZH": chinese, "EN": english, 'ZH_MIX_EN': chinese_mix,
         'KR': korean, 'FR': french, 'SP': spanish, 'ES': spanish}
 ```
 
-
-
 同时修改 `melo/text/japanese.py`，在 MeCab 初始化失败时静默降级：
-
-python
 
 ```
 try:
@@ -101,26 +92,17 @@ except Exception:
     _TAGGER = None
 ```
 
-
-
 **问题二：NameError: name 'language_id_map' is not defined**
 
-text
-
-```
 原因：社区版的 api.py 中 export_onnx 函数使用了 language_id_map，但文件顶部缺少导入
+
 解决：在 api.py 顶部添加一行：from .text import language_id_map
-```
 
-
-
-**知识点**：language_id_map 是 MeloTTS 中语言名称（如 "ZH"）到数字 ID（如 1）的映射表。模型内部用数字 ID 来区分不同语言。
+**注意**：language_id_map 是 MeloTTS 中语言名称（如 "ZH"）到数字 ID（如 1）的映射表。模型内部用数字 ID 来区分不同语言。
 
 ### 2.3 torch.onnx.export() 核心参数详解
 
 这是整个导出过程最核心的函数。把它理解为"翻译官"：
-
-python
 
 ```
 torch.onnx.export(
@@ -136,22 +118,23 @@ torch.onnx.export(
 )
 ```
 
-
-
 **逐个参数解释：**
 
-| 参数                              | 通俗解释                               | 为什么这样设置                                               |
-| :-------------------------------- | :------------------------------------- | :----------------------------------------------------------- |
-| opset_version=16                  | 翻译规则的版本号                       | 版本 16 对"可变尺寸"支持更好。太低会导致某些算子不支持       |
-| do_constant_folding=True          | 先把"固定不变"的部分算完，省得每次都算 | 建议开启。能消除 ja_bert（零张量）和 Expand 节点的动态占位符 |
-| keep_initializers_as_inputs=False | 把常量的输入删掉                       | 配合常量折叠，让模型更精简。但会导致输入数量变化（8→7）      |
-| dynamic_axes                      | 告诉翻译官：这个维度"可以变"           | 文本长度不固定，序列长度必须可变化                           |
+| 参数                                | 通俗解释               | 为什么这样设置                                               |
+| :---------------------------------- | :--------------------- | :----------------------------------------------------------- |
+| `opset_version=16`                  | 翻译规则的版本号       | 版本 16 对"可变尺寸"支持更好，避免低版本算子不支持           |
+| `do_constant_folding=True`          | 提前计算固定不变的部分 | 消除 `Expand` 节点的动态占位符，避免 RKNN 报 `invalid expand shape` |
+| `keep_initializers_as_inputs=False` | 将常量从输入列表中移除 | 配合常量折叠精简模型                                         |
+| `dynamic_axes`                      | 声明哪些维度可变       | 序列长度随文本变化，需声明为动态                             |
 
-⚠️ **关键副作用**：ja_bert 是一个全零张量，被常量折叠优化后直接删除了。模型输入从 8 个变成 7 个。这个变化会影响后续所有操作（特别是量化时的校准数据准备）。
+**关于 `ja_bert` 输入数量：** 是否出现在 ONNX 输入中，以实际导出的 ONNX 文件为准。运行以下命令确认：
+```
+python -c "import onnx; m=onnx.load('encoder.onnx'); print([i.name for i in m.graph.input])"
+```
+- 输出包含  → 输入为 8 个，校准数据需包含，输出不包含 → 输入为 7 个，校准数据无需包含
+- 校准数据文件数量须与 ONNX 实际输入数量一致。
 
 ### 2.4 dynamic_axes——如何声明"可变尺寸"
-
-python
 
 ```
 dynamic_axes={
@@ -163,8 +146,6 @@ dynamic_axes={
     # ...
 }
 ```
-
-
 
 **核心概念**：ONNX 模型中的维度有两种表示方式：
 
@@ -184,14 +165,10 @@ dynamic_axes={
 
 ### 2.5 onnxsim.simplify()——ONNX 模型"减肥"
 
-python
-
 ```
 sim_model, _ = onnxsim.simplify(encoder_name)
 onnx.save(sim_model, encoder_name)
 ```
-
-
 
 **这个函数做了什么？**
 
@@ -216,8 +193,6 @@ onnx.save(sim_model, encoder_name)
 
 但 RKNN 的动态形状和 PyTorch/ONNX 的动态形状不是一回事。
 
-python
-
 ```
 rknn.config(
     target_platform='rk3588',
@@ -228,8 +203,6 @@ rknn.config(
     ]
 )
 ```
-
-
 
 **核心认知**：
 
@@ -242,8 +215,6 @@ rknn.config(
 
 ### 3.2 Decoder 的 dynamic_input 形状配置
 
-python
-
 ```
 shapes = [
     [1, 2*seq_len, 256],   # attn: [batch, 2*seq_len, attn_dim]
@@ -254,8 +225,6 @@ shapes = [
     [1]                    # noise_scale: [1]（固定）
 ]
 ```
-
-
 
 **关键点**：
 
@@ -279,8 +248,6 @@ shapes = [
 
 有时候 NPU 不支持某些算子，需要强制它们在 CPU 上运行：
 
-python
-
 ```
 rknn.config(
     target_platform='rk3588',
@@ -288,17 +255,11 @@ rknn.config(
 )
 ```
 
-
-
 ⚠️ **常见错误写法**：
-
-python
 
 ```
 op_target={'Less': 'cpu'}  # ❌ 错误！Less 是算子类型名，不是输出 tensor 名
 ```
-
-
 
 **正确写法要求**：
 
@@ -324,13 +285,9 @@ op_target={'Less': 'cpu'}  # ❌ 错误！Less 是算子类型名，不是输出
 - **常量折叠的"推波助澜"**：开启的 `do_constant_folding=True` 会进一步将图中所有能确定的常量计算提前算出结果。既然 `x_length` 已经被 Tracing 固化为常量 256，那么 `y_lengths = 2 * x_length` 这样的计算就会被直接折叠成常量 512，整个计算图因此完全固化。
 - **dynamic_axes 的"无能为力"**：`dynamic_axes` 的作用更像是在 ONNX 模型的**元数据**上做一个标记，告诉推理引擎"这个维度理论上是可以变的"。但它**无法改变已经被 Tracing 固化的计算图本身**。因此，即使你标记了 `seq_len`，模型内部的 Reshape、MatMul 等算子，其期望的输入形状已经被固化成了 512。当你尝试传入 `seq_len=128` 的数据时，形状不匹配，自然会报错。
 
-**类比**：这就像给一个厨师拍了一段做菜的视频，然后让另一个厨师照着视频做。但视频里用的是"2 斤面粉"，所以每次做的都是"2 斤面粉的量"。即使你说"这次用 1 斤"，也没用，因为视频里就是 2 斤。
-
 ### 4.2 直接原因：x_length 被固化为 256
 
 在社区版的 `export_onnx` 函数中，x_length 被硬编码为 256：
-
-python
 
 ```
 def export_onnx(self, ..., x_length=256, ...):
@@ -339,15 +296,11 @@ def export_onnx(self, ..., x_length=256, ...):
     # ...
 ```
 
-
-
 这个 **256**，就是 Tracing 过程中被"录下来"的那个具体数值。从这个点开始，整个计算图都围绕"序列长度为 256"这个前提被构建，并被 `do_constant_folding` 进一步固化。
 
 ### 4.3 如何验证真动态？
 
 用 ONNX Runtime 输入不同 seq_len，检查输出形状是否变化：
-
-python
 
 ```
 # 通用验证代码模板
@@ -359,8 +312,6 @@ out1 = sess.run(None, make_inputs(seq_len=128))
 out2 = sess.run(None, make_inputs(seq_len=256))
 print(out1[0].shape, out2[0].shape)  # 相同=假动态，不同=真动态
 ```
-
-
 
 - 如果输出形状 **不同** → ✅ 真动态
 - 如果输出形状 **相同** 或 **报错** → ❌ 假动态
@@ -397,8 +348,6 @@ print(out1[0].shape, out2[0].shape)  # 相同=假动态，不同=真动态
 
 1. **保留原始 duration prediction 逻辑**：
 
-python
-
 ```
 # 删除硬编码行！
 # y_lengths = torch.FloatTensor([2 * x_length])
@@ -409,56 +358,66 @@ w_ceil = torch.ceil(w)
 y_lengths = torch.clamp_min(torch.sum(w_ceil, [1, 2]), 1).long()
 ```
 
-
-
 1. **确保所有上采样操作基于 y_lengths 动态进行**：不能有 `F.pad(..., max_len)`，不能有固定 `size=` 的 `interpolate`。
 2. **导出时使用 symbolic tracing（非 tracing）**：`torch.onnx.export` 默认用 `torch.jit.trace`，无法处理动态控制流。应改用 `torch.jit.script`（但 MeloTTS 含大量 Python 控制流，可能失败）。
 3. **关闭常量折叠**：`do_constant_folding=False`
 
 ### 4.6 MeloTTS 架构流式分析
 
-MeloTTS 基于 **VITS / VITS2 架构**（或其变种），核心特点是：
+MeloTTS 基于 VITS（VITS2）架构，核心特点是 **非自回归、端到端**：
 
-| 组件                                              | 是否流式？ | 说明                                                    |
-| :------------------------------------------------ | :--------- | :------------------------------------------------------ |
-| **Text Encoder**                                  | ❌ 非流式   | 使用全注意力（Transformer），需看到整句才能输出文本表征 |
-| **Duration Predictor**                            | ❌ 非流式   | 预测每个音素持续多少帧，依赖全局上下文                  |
-| **Flow-based Decoder (Posterior Encoder + Flow)** | ❌ 非流式   | 一次性生成整段 mel spectrogram（如 [1, 80, T]，T=512+） |
-| **Vocoder (HiFi-GAN)**                            | ✅ 可流式   | HiFi-GAN 本身支持逐帧/滑动窗口合成波形                  |
+| 组件               | 是否流式？   | 说明                                                      |
+| :----------------- | :----------- | :-------------------------------------------------------- |
+| Text Encoder       | ❌ 非流式     | 使用 Transformer 全注意力机制，需看到整句才能输出文本表征 |
+| Duration Predictor | ❌ 非流式     | 预测每个音素持续帧数，依赖全局文本特征                    |
+| Flow-based Decoder | ❌ 非流式     | 一次性生成整段梅尔频谱，T 由时长预测模块决定              |
+| Vocoder (HiFi-GAN) | ⚠️ 有条件支持 | 标准实现为全图生成，存在支持流式合成的因果化变体          |
 
-👉 **关键瓶颈在 mel 生成阶段**：MeloTTS 的 decoder 必须等整句 mel 完全生成后，才能交给 vocoder。所以即使 vocoder 能流式合成，但 mel 输入是"一次性给全"的 → vocoder 也得等全部 mel 到齐才开始工作（除非手动拆分）。
+**关键瓶颈**：MeloTTS 的 Decoder 必须等整段梅尔频谱完全生成后，才能交给 Vocoder。因此即使 Vocoder 有流式变体，在标准 MeloTTS 架构中，单句推理必须等全量生成完成后才能输出。
 
-| 能力                     | 是否支持   | 说明                         |
-| :----------------------- | :--------- | :--------------------------- |
-| **降低首帧延迟（TTFA）** | ❌ 不支持   | 必须等全 mel 生成完          |
-| **提前播放音频开头**     | ✅ 支持     | 但前提是全 mel 已生成        |
-| **实现真正流式合成**     | ❌ 不支持   | 架构非因果，无法边输入边输出 |
-| **用于长文本分段播放**   | ⚠️ 有限支持 | 需手动分句，牺牲自然度       |
+**关于“流式合成”的澄清**：MeloTTS 官方提到的“流式合成”（streaming synthesis）与逐帧/逐 token 输出是两回事。根据官方 API 实现，`/tts/stream` 接口提供的是 句子级流式响应（sentence-level streaming responses），模型不会输出 token 级别的音频。
+
+| 能力               | 是否支持 | 说明                                                         |
+| :----------------- | :------- | :----------------------------------------------------------- |
+| 按句子边界分段合成 | ✅ 支持   | 长文本按标点断句，逐句合成并输出。这是 MeloTTS “流式合成”的实际含义 |
+| 单句推理时提前输出 | ❌ 不支持 | 单句必须等全量生成完成                                       |
+| 逐帧/逐 token 输出 | ❌ 不支持 | 官方明确说明模型不输出 token 级别的音频                      |
+| 后处理裁剪播放     | ✅ 支持   | 全量生成后按实际帧数裁剪，改善感知延迟                       |
+
 
 ## 五、INT8 量化
 
 ### 5.1 什么是量化？为什么要量化？
 
-**量化**就是把模型中的浮点数（FP32/FP16）转成整数（INT8）。可以理解为"把高清照片压缩成小尺寸图片"。
+量化是将模型权重和激活从 FP32 转换为 INT8 的过程。可以理解为“有损压缩”：INT8 量化需要校准数据来统计激活值分布，计算 scale 和 zero_point，决定 FP32 到 INT8 的映射方式。
 
-**量化的好处**：
+**FP16 vs INT8 量化的区别：**
+
+- FP16 转换：不需要校准数据，精度损失几乎可忽略
+- INT8 量化：需要校准数据，体积压缩更明显，但精度损失更大
+
+**INT8 量化的好处：**
 
 - 模型体积缩小（129MB → 67MB）
 - 内存占用降低
 
-**量化的代价**：
+**INT8 量化的代价：**
 
-- 精度略有损失（但通常可接受）
-- 部分模型结构不支持全 INT8 量化
+- TTS 生成式任务中音质下降（杂音）
+- 部分模型结构无法 INT8 量化（如 Encoder 因 Less 算子报错失败）
+- 推理时间无明显提升
 
-**量化 vs 非量化验证**：
+**本项目 INT8 量化验证结果：**
 
-- ✔️ Netron 显示结构不变、仅 dtype 变为 int8 → 正确
-- ✔️ 模型体积减半（129MB → 67MB）→ 符合 INT8 量化预期
-- ✔️ 推理时间提升有限 → 完全符合 RKNN 实际表现
-- ✔️ 量化不改变计算图/FLOPs → 正确
+| 验证项                               | 结果                      |
+| :----------------------------------- | :------------------------ |
+| Netron 显示结构不变，dtype 变为 int8 | ✔️ 正确                    |
+| Decoder 量化✅，体积从 129MB → 67MB | ✔️ 符合 INT8 量化预期      |
+| 推理时间变化                         | ❌ 无明显提升              |
+| 播放音质                            | ❌ 有杂音，不清晰          |
+| Encoder 量化❌失败                  | ❌ Less 算子类型冲突，失败 |
 
-### 5.1.5 RKNN 量化的核心机制
+### 5.1.5 RKNN 量化的机制
 
 RKNN 的 PTQ（训练后量化，Post-Training Quantization）在 `do_quantization=True` 时，对模型中不同对象的处理逻辑如下：
 
@@ -488,29 +447,19 @@ ret = rknn.build(
 )
 ```
 
-
-
 **为什么必须提供校准数据？** 量化不是"直接砍掉小数位"，而是要找一种最优的映射方式。比如有一组浮点数 [0.1, 0.5, 1.2, 3.8]，要压缩到 0~255 的整数范围，需要先知道这组数的最大值和最小值，才能算出映射比例。**校准数据就是给量化工具看的"样本"，让它了解数据的分布范围。**
 
 ### 5.3 校准数据格式与生成规范
 
-**dataset.txt 的内容格式**（使用 .npy 文件）：
+dataset.txt 的内容格式，使用 .npy 文件
 
-text
+关键规则：
+- 每行是一个完整的样本，包含该样本的所有输入
+- 文件数量 = ONNX 模型的输入数量（Encoder 为 8 个，含 `ja_bert`；Decoder 为 6 个）
+- 顺序必须与 ONNX 的输入顺序一致
+- 每个 `.npy` 文件的 shape 和 dtype 必须与 ONNX 输入完全匹配
 
-```
-calibration_data_encoder/sample_00_x.npy calibration_data_encoder/sample_00_x_lengths.npy ...（共7个文件）
-calibration_data_encoder/sample_01_x.npy calibration_data_encoder/sample_01_x_lengths.npy ...（共7个文件）
-```
-
-
-
-**关键规则**：
-
-- ✅ 每行是一个完整的样本，包含该样本的所有输入
-- ✅ 文件数量 = ONNX 模型的输入数量（Encoder 是 7 个，Decoder 是 6 个）
-- ✅ 顺序必须与 ONNX 的输入顺序一致
-- ✅ 每个 .npy 文件的 shape 和 dtype 必须与 ONNX 输入完全匹配
+> 注意：注意：ja_bert 是否出现在 ONNX 输入中，以实际导出的 ONNX 文件为准，校准数据文件数量须与之匹配。运行以下命令确认：`python -c "import onnx; m=onnx.load('encoder.onnx'); print([i.name for i in m.graph.input])"`
 
 **为什么用 .npy 而不是 .npz？** 实测 RKNN 对 .npz 的支持不稳定，使用 .npy 文件列表更可靠。
 
@@ -530,25 +479,22 @@ calibration_data_encoder/sample_01_x.npy calibration_data_encoder/sample_01_x_le
 
 ### 5.4 量化常见错误及排查
 
-| 错误信息                            | 原因                                    | 解决方案                              |
-| :---------------------------------- | :-------------------------------------- | :------------------------------------ |
-| The input num: 8 not match 7        | ja_bert 被优化掉，校准数据仍用 8 个文件 | 校准数据只写 7 个文件                 |
-| cannot convert float NaN to integer | 随机数据产生 NaN                        | 用 np.random.uniform(-1,1) 替代 randn |
-| Unsupport file                      | .npz 格式不兼容                         | 改用 .npy 文件列表                    |
-| ElementwiseLogical unsupported      | INT8 与 FP32 类型冲突                   | 考虑 FP16 回退                        |
+| 错误信息                              | 原因                                       | 解决方案                                   |
+| :------------------------------------ | :----------------------------------------- | :----------------------------------------- |
+| `The input num: 8 not match 7`        | 校准数据文件数量与 ONNX 实际输入数量不一致 | 确认 ONNX 实际输入数量，校准数据同步调整   |
+| `cannot convert float NaN to integer` | 随机数据产生 `NaN`                         | 用 `np.random.uniform(-1, 1)` 替代 `randn` |
+| `Unsupport file`                      | `.npz` 格式不兼容                          | 改用 `.npy` 文件列表                       |
+| `ElementwiseLogical unsupported`      | INT8 与 FP32 类型冲突                      | 使用 FP16（不加 `--do_quant`）回退         |
+
 
 ### 5.5 Encoder 的 INT8 量化失败：Less 算子类型冲突
 
 **报错现象**：
 
-text
-
 ```
 ElementwiseLogical: unsupported A type: INT8, B type: FLOAT!
 Op type:Less, name: Less:/sdp/flows.7/Less, fallback cpu failed.
 ```
-
-
 
 **结合核心机制分析**：
 
@@ -559,8 +505,6 @@ Op type:Less, name: Less:/sdp/flows.7/Less, fallback cpu failed.
 - NPU 不支持 INT8 与 FP32 混合运算
 
 **报错的完整链路**：
-
-text
 
 ```
 sdp_ratio（外部输入，量化后转为 INT8）
@@ -575,8 +519,6 @@ Less 比较算子（NPU 的 ElementwiseLogical）
     ↓
 rknn_run 返回 -1
 ```
-
-
 
 **为什么常见方案都无效？**
 
@@ -610,7 +552,7 @@ Encoder 的关键区别在于：`sdp_ratio` 是用户传入的外部标量，量
 2. **未设置真实维度带来的连锁故障**：NPU 按最大长度错误解析输入张量，推理输出数据完全错乱，用于分配音频输出长度的变量 `predicted_lengths_max_real` 被算出负数；负数 int 强制转换为 `size_t` 时溢出为超大数值，访问 vector 下标触发 `std::out_of_range` 崩溃。
 3. **前期两次代码方案失败原因**：
    - 方案 1：直接修改 `inputs[0].dims`：`rknn_input` 结构体不存在维度成员，语法层面编译报错；
-   - 方案 2：4 参数 `rknn_set_input_shape`：适配高版本 RKNN API，与当前 2.3.2 SDK 接口定义不兼容。
+   - 方案 2：参数 `rknn_set_input_shape`：适配高版本 RKNN API，与当前 2.3.2 SDK 接口定义不兼容。
 
 ### 6.3 最终解决方案
 
@@ -622,79 +564,70 @@ Encoder 的关键区别在于：`sdp_ratio` 是用户传入的外部标量，量
 3. 保留原有全部输入拷贝、malloc 内存分配、推理、输出拷贝、内存释放逻辑，仅新增维度配置代码，无其他业务改动；
 4. 效果：NPU 按真实有效序列长度推理，输出数值正常，`predicted_lengths_max_real` 不会出现负数，彻底解决 vector 越界崩溃，同时保留动态 shape 模型长短句自适应、提速、省内存的核心优势。
 
-## 七、优化方案
+## 七、方案对比
 
 ### 7.1 各种方案对比
 
-| 方案                        | 原理                                   | 效果                 | 风险                       | 可行性 |
-| :-------------------------- | :------------------------------------- | :------------------- | :------------------------- | :----- |
-| **后处理裁剪 + 流式播放**   | 推理完按 real_len 截断，提前播放前几帧 | 感知延迟 2s→0.3s     | 无                         | ⭐⭐⭐⭐⭐  |
-| **减少 Flow 循环次数**      | 修改 n_flow（如 12→2）                 | 推理时间大幅下降     | 音质严重下降，可能完全失效 | ⭐⭐     |
-| **INT8 量化**               | 减少内存带宽压力                       | 几乎没有加速          | 精度损失，需无 fallback    | ⭐⭐     |
-| **修复 Duration Predictor** | 恢复 sum(w_ceil) + 关闭常量折叠        | 支持真动态输入       | RKNN 转换失败风险极高      | ⭐      |
-| **模型剪枝/蒸馏**           | 减少参数量 & FLOPs                     | 推理时间 ↓↓          | 需重新训练，音质风险       | ⭐      |
-| **仅改 seq_lens**           | 希望文本短就快                         | ❌ 无效（假动态）     | 无                         | ✘      |
-| **仅改 dim_param**          | 表面修改                               | ❌ 无效（内部仍静态） | 无                         | ✘      |
+| 方案                  | 原理                                 | 效果                                 | 风险                       | 可行性 |
+| :-------------------- | :----------------------------------- | :----------------------------------- | :------------------------- | :----- |
+| 后处理裁剪 + 流式播放 | 推理完按实际帧数截断，提前播放前几帧 | 改善感知延迟                         | 无                         | ⭐⭐⭐⭐⭐  |
+| INT8 量化             | 将 FP16 模型量化为 INT8              | 压缩模型体积，效果取决于算子支持程度 | 精度损失，TTS 任务音质下降 | ⭐⭐⭐    |
+| 仅改 `seq_lens`       | 希望文本短就快                       | ❌ 无效（内部计算图已固化，为假动态） | 无                         | ✘      |
+| 仅改 `dim_param`      | 表面修改                             | ❌ 无效（内部仍静态）                 | 无                         | ✘      |
 
 ### 7.2 推荐路径
 
-1. **快速上线**：INT8 量化模型 + 后处理裁剪播放（零模型改动，大幅改善感知延迟）
-2. **中期优化**：解决 Less 算子 CPU fallback（改用 FP16 模型）
-3. **长期替代**：若需 <500ms 延迟，评估 FastSpeech2 + HiFi-GAN 等自回归架构
+- **推荐方案**：使用 FP16 模型（音质清晰，稳定可用），结合后处理裁剪优化感知延迟
+- **备选方案**：INT8 量化（体积减小，但 TTS 任务音质下降）
+- **不推荐**：继续尝试动态 shape（模型内部已固化，无法实现真动态）
 
-### 7.3 架构替换方案
+### 7.3 本项目已确认的事实
 
-| 方案                                         | 能否压到 <500ms    | 代价                      |
-| :------------------------------------------- | :----------------- | :------------------------ |
-| **坚持用 MeloTTS + RK3588**                  | ❌ 不可能           | 架构决定下限              |
-| **换成 FastSpeech2 + HiFi-GAN（FP16/INT8）** | 理论可做到 200~400ms（未实测） | 需重新训练/适配，音质略逊 |
-| **用轻量 VITS（如 LightVITS）+ 精简 Flow**   | ⚠️ 可能 1s 左右     | 音质下降，仍难进 500ms    |
-| **上更高端硬件（如 Orin Nano 级）**          | ❌ 板子不对路       | RK3588 已是瑞芯微顶配     |
+| 事实                  | 说明                                                         |
+| :-------------------- | :----------------------------------------------------------- |
+| FP16 Decoder 可用     | 音质清晰，推理时间约 1.8–2.2s，与文本长度无关                |
+| INT8 Decoder 可用     | 有声音但存在杂音，推理时间无明显改善                         |
+| Encoder INT8 量化失败 | `Less` 算子 INT8/FP32 类型冲突，无法解决                     |
+| 动态 shape 无效       | ONNX 导出时 Tracing 机制已固化，`dynamic_axes` 仅为元数据标记 |
+| 校准数据              | 必须来自真实推理，随机数校准无效                             |
 
-> 💡 **残酷现实**：在 RK3588 上，想用 MeloTTS 做低延迟 TTS，就像拿拖拉机跑 F1——不是不努力，是车不行。
+### 7.4 结论
 
-**如果必须用 MeloTTS**（比如客户指定音质）：
+若必须使用 MeloTTS：接受当前延迟（1.8–2.2s），通过预加载、缓存、后处理播放等工程手段优化用户体验。
 
-- 接受 2s 延迟，用预加载 + 缓存 + 后处理播放提升用户体验
-- 或者提前生成常用句子音频，运行时直接播
+若可换模型：本项目未实测其他 TTS 架构，需自行移植并测试，无法提供延迟数据。
 
-**如果可以换模型**：
-
-- 试 FastSpeech2 + MB-MelGAN / HiFi-GAN-Lite
-- 这类模型在 RK3588 上 INT8 能跑到 300ms 内，且支持真正流式
-
-## 八、最终结论与可迁移知识
+## 八、最终总结
 
 ### 8.1 最终方案与模型组合
 
-| 模型        | 方案                 | 说明                                            |
-| :---------- | :------------------- | :---------------------------------------------- |
-| **Encoder** | FP16 静态            | 固定 256 帧，不加 --do_quant                    |
-| **Decoder** | FP16 固定长度（256） | 保留 dim_param 标记（元数据动态），但内部已固化 |
+**本项目建设使用的模型**
+| 模型    | 方案                 | 说明                                              |
+| :------ | :------------------- | :------------------------------------------------ |
+| Encoder | FP16 静态            | 固定 256 帧，不加 `--do_quant`                    |
+| Decoder | FP16 固定长度（256） | 保留 `dim_param` 标记（元数据动态），但内部已固化 |
 
-**推理时的工作方式**：
-
+推理时的工作方式：
 1. 输入文本 → padding 到 256 帧（无论文本多短，都补齐到 256）
 2. Encoder（FP16）→ 输出特征
 3. Decoder（FP16）→ 生成音频（固定 512 帧）
 
-**关键**：推理时间与文本长度无关，固定为 1.8–2.2 秒。这是架构决定的，不是转换能解决的。
+推理时间与文本长度无关，固定为 1.8–2.2 秒。这是架构决定的，不是转换能解决的。
 
-**量化效果**：
+量化结果：
+| 模型         | 量化结果       | 说明                                                     |
+| :----------- | :------------- | :------------------------------------------------------- |
+| Encoder INT8 | ❌ 失败         | `Less` 算子 INT8/FP32 类型冲突，无法解决                 |
+| Decoder INT8 | ✅ 体积压缩成功 | 从 129MB 压缩至 67MB，有声音但杂音重，推理时间无明显改善 |
 
-| 模型         | 体积   | 说明                       |
-| :----------- | :----- | :------------------------- |
-| FP16 Decoder | 129 MB | 未量化                     |
-| INT8 Decoder | 67 MB  | 成功 INT8 量化，压缩约 50% |
-
-**完成状态**：
-
-| 组件           | 状态                                                 |
-| :------------- | :--------------------------------------------------- |
-| Encoder → RKNN | ✅ FP16 静态，转换成功                                |
-| Decoder → RKNN | ✅ FP16 固定长度，转换成功                            |
-| INT8 量化      | ✅ 体积压缩成功（129MB→67MB），但 Less 算子报错未解决 |
-| 推理运行       | ✅ 可在 NPU 上稳定运行                                |
+完成状态：
+| 组件                   | 状态                            |
+| :--------------------- | :------------------------------ |
+| Encoder → RKNN（FP16） | ✅ 转换成功，音质正常            |
+| Decoder → RKNN（FP16） | ✅ 转换成功，音质清晰            |
+| Decoder → RKNN（INT8） | ✅ 转换成功，有声音但杂音重      |
+| Encoder → RKNN（INT8） | ❌ 量化失败，`Less` 算子类型冲突 |
+> 本项目建设使用 FP16 全套方案。 INT8 Decoder 虽有体积优势，但音质下降明显，且推理时间无明显改善，不作为生产推荐。
 
 ### 8.2 常见错误速查
 
@@ -707,18 +640,16 @@ Encoder 的关键区别在于：`sdp_ratio` 是用户传入的外部标量，量
 | ElementwiseLogical unsupported            | INT8 与 FP32 类型冲突                         |
 | std::out_of_range（18446744073709551615） | 动态模型未设置真实维度，负数溢出为超大 size_t |
 
-### 8.3 核心认知清单
+### 8.3 核心认知
 
-1. **MeloTTS 是音质优先模型，不是速度优先**。1.8–2.2 秒的推理时间是架构决定的常态。
-2. **量化（INT8）的主要价值是压缩体积**（129MB→67MB），对推理时间提升有限。量化不是降低延迟的主要手段。
-3. **`dynamic_axes` + `seq_lens` 在当前导出方式下是"纸面动态"**。要真动态需要修改源码，但风险极高。
-4. **`torch.jit.trace` 是假动态的根源**，因它固化所有 shape 相关值。
-5. **Less 算子报错的根本原因是**：量化后模型内部的激活值为 INT8，而图内常量节点（由 sdp_ratio 参数固化而来）保持 FP32，NPU 不支持 INT8 与 FP32 的混合运算，导致 Less 算子无法在 NPU 上执行。
-6. **最有效的优化路径是后处理裁剪 + 流式播放**——零模型改动，大幅改善感知延迟。
-7. **不要与非自回归架构死磕低延迟**——选型错误比技术问题更致命。如果需 <500ms 延迟，应评估 FastSpeech2 等自回归 TTS。
-8. **FP16 是 INT8 的安全替代方案**：不需要校准数据，不会出现类型冲突，稳定可用。
-
-> **最终建议**：用 INT8 量化模型（67MB）+ 后处理裁剪播放快速上线。若未来需要更低延迟，评估自回归 TTS 架构替换。
+1. MeloTTS 是音质优先模型，不是速度优先。1.8–2.2 秒的推理时间是架构决定的常态。
+2. 量化（INT8）的主要价值是压缩体积（129MB→67MB），对推理时间提升有限。
+3. `dynamic_axes` + `seq_lens` 在当前导出方式下是"纸面动态"。
+4. `torch.jit.trace` 是假动态的根源，因它固化所有 shape 相关值。
+5. Less 算子报错的根本原因是：量化后模型内部的激活值为 INT8，而图内常量节点（由 sdp_ratio 参数固化而来）保持 FP32，NPU 不支持 INT8 与 FP32 的混合运算，导致 Less 算子无法在 NPU 上执行。
+6. 最有效的优化路径是后处理裁剪 + 流式播放——零模型改动，大幅改善感知延迟。
+7. 不要与非自回归架构死磕低延迟——选型错误比技术问题更致命。如果需 <500ms 延迟，应评估 FastSpeech2 等自回归 TTS。
+8. FP16 是 INT8 的安全替代方案：不需要校准数据，不会出现类型冲突，稳定可用。
 
 ### 8.4 关键文件与工具
 
@@ -734,14 +665,19 @@ Encoder 的关键区别在于：`sdp_ratio` 是用户传入的外部标量，量
 
 **遇到过的主要坑：**
 
-| 坑                    | 本质                                   |
-| :-------------------- | :------------------------------------- |
-| ja_bert 被优化掉      | 常量折叠的副作用，需要适配输入数量变化 |
-| Expand 报错           | 目标形状含有动态占位符，RKNN 无法折叠  |
-| ScatterND 报错        | 模型内部的形状构造方式与 RKNN 不兼容   |
-| 多长度 Decoder 失败   | RKNN 对多形状的支持不完善              |
-| 校准数据 NaN          | 随机生成的数据不稳定                   |
-| 量化 input num 不匹配 | 校准数据文件数量与模型输入数量不一致   |
+| 坑                      | 本质                                                         |
+| :---------------------- | :----------------------------------------------------------- |
+| `ja_bert` 输入数量变化  | 取决于 ONNX 导出时日语模块是否有效参与计算，以实际导出的 ONNX 输入列表为准。校准数据文件数量须与之匹配 |
+| `Expand` 报错           | 目标形状含 `dim_param` 动态占位符，RKNN 常量折叠无法确定具体形状。开启 `do_constant_folding=True` 可将其折叠为具体值 |
+| `ScatterND` 报错        | Encoder 内部 SDP 模块用 `ScatterND + Slice` 构造形状，其中 `-1` 无法被 RKNN 常量折叠消除，导致动态转换失败，Encoder 最终采用静态方案 |
+| 多长度 Decoder 失败     | RKNN 动态 shape 是“预设菜单”模式，多长度预设导致形状推断出错，锁定单长度 `seq_lens=256` 解决 |
+| 校准数据 `NaN`          | `np.random.randn()` 可能产生极端值或 `NaN`，改用 `np.random.uniform(-1, 1)` 替代 |
+| 量化 `input num` 不匹配 | 校准数据文件数量与 ONNX 实际输入数量不一致                   |
+
+确认 ONNX 实际输入数量的命令如下：
+```
+python -c "import onnx; m=onnx.load('model.onnx'); print([i.name for i in m.graph.input])"
+```
 
 ### 8.5 可迁移通用技能 🟢
 
@@ -786,8 +722,6 @@ Encoder 的关键区别在于：`sdp_ratio` 是用户传入的外部标量，量
 
 **模型分析通用命令**：
 
-bash
-
 ```
 # 查看输入输出
 python -c "import onnx; m=onnx.load('model.onnx'); print([i.name for i in m.graph.input])"
@@ -797,8 +731,6 @@ python -c "import onnx; m=onnx.load('model.onnx'); print(m.graph.output[0])"
 python -c "import onnx; m=onnx.load('model.onnx'); [print(n.name) for n in m.graph.node if n.op_type=='MatMul']"
 ```
 
-
-
 **二分法定位问题**：
 
 1. 先用单长度（静态）验证模型能否转换
@@ -806,8 +738,6 @@ python -c "import onnx; m=onnx.load('model.onnx'); [print(n.name) for n in m.gra
 3. 关闭量化先验证浮点模型 → 再尝试量化
 
 **通用工作流模板**：
-
-text
 
 ```
 1. 导出 ONNX
@@ -826,45 +756,44 @@ text
    └── 必要时放弃 INT8，使用 FP16
 ```
 
-
-
-### 8.6 MeloTTS 特有知识（不可迁移）🔴
+### 8.6 MeloTTS 特有知识（不可迁移）
 
 以下知识**仅适用于本 MeloTTS 项目**，不通用：
 
-| 知识                              | 说明                            |
-| :-------------------------------- | :------------------------------ |
-| `y_lengths = 2 * x_length` 硬编码 | VITS/TTS 架构特定，其他模型没有 |
-| `ja_bert` 被常量折叠移除          | MeloTTS 多语言设计特有问题      |
-| `mmontol/MeloTTS` 仓库            | 社区修改版，非官方              |
-| Less 算子与 `sdp_ratio` 类型冲突  | 模型特定设计问题                |
-| Decoder 循环次数固定 4 层         | VITS 架构特定                   |
-| 输出长度固定 `[1,1,262144]`       | MeloTTS + tracing 导出特有问题  |
-| MeCab + unidic 依赖               | TTS 多语言支持特有              |
+| 知识                               | 说明                                                         |
+| :--------------------------------- | :----------------------------------------------------------- |
+| `y_lengths = 2 * x_length` 硬编码  | 硬编码的默认值。若改为动态计算（如 `torch.sum(w_ceil)`），ONNX 导出会引入 `ScatterND` 等不易被 RKNN 转换的算子，转换失败风险较高 |
+| `ja_bert` 输入数量变化             | `ja_bert` 是否出现在 ONNX 输入中，以实际导出的 ONNX 为准，校准数据文件数量须与之匹配 |
+| `mmontol/MeloTTS` 仓库             | 社区修改版，在官方仓库基础上增加了 ONNX 导出功能，非官方仓库 |
+| `Less` 算子与 `sdp_ratio` 类型冲突 | INT8 量化时外部输入 `sdp_ratio` 强制转为 INT8，而阈值常量（如 0.2）为图内 FP32 常量，NPU 不支持混合类型逻辑比较。非模型设计缺陷，是 RKNN PTQ 量化规则的固有限制 |
+| Decoder 循环次数固定 4 层          | VITS 架构的流式生成设计，`n_flows` 固定为 4 层。可通过修改源码减少层数，但音质会明显下降且 RKNN 转换成功率不确定 |
+| 输出长度固定 `[1,1,262144]`        | ONNX 导出时 Tracing 机制将 `y_lengths` 固化为常量 `2 * x_length`（512），对应音频长度 `512 * 512 = 262144`。`dynamic_axes` 仅为元数据标记，无法改变已固化的计算图 |
+| `MeCab` + `unidic` 依赖            | MeloTTS 多语言支持需要日语分词器和词典，`pip install unidic-lite` 可解决，非模型设计问题 |
+
 
 ### 8.7 关键术语
 
-| 术语          | 一句话解释                               |
-| :------------ | :--------------------------------------- |
-| ONNX          | 模型通用格式，像国际通用语言             |
-| RKNN          | NPU 原生格式，像地方方言                 |
-| dim_value     | 固定尺寸，不能变                         |
-| dim_param     | 动态尺寸，可以变                         |
-| dynamic_axes  | 告诉 ONNX 哪些维度是活的                 |
-| 常量折叠      | 提前计算固定部分，简化模型               |
-| onnxsim       | 进一步简化模型，会固化动态维度             |
-| dynamic_input | RKNN 的"形状菜单"，预设所有可能性        |
-| 量化          | 从 float32 压缩成 int8，更小更快         |
-| 校准数据      | 给量化工具看的样本数据，用于计算映射比例 |
-| dataset.txt   | 校准数据的索引文件，每行一个完整样本     |
-| MatMul        | 矩阵乘法，深度学习最基础的操作           |
-| ScatterND     | 根据索引更新张量，形状构造工具           |
-| Expand        | 广播张量到目标形状                       |
-| SDP           | 时长预测器，Encoder 内部模块             |
+| 术语                | 解释                                                         |
+| :------------------ | :----------------------------------------------------------- |
+| **ONNX**            | 开放神经网络交换格式，是 PyTorch、TensorFlow 等框架导出模型的通用标准格式，作为 PyTorch 到 RKNN 的中间桥梁 |
+| **RKNN**            | Rockchip 为 NPU 平台定义的专有模型格式（`.rknn`），在 RK3588、RK3566 等设备上利用 NPU 硬件加速推理 |
+| **`dim_value`**     | ONNX 张量形状描述中的固定值，表示该维度被固化为一个确定的整数，运行时不可变。如 `dim_value: 1` 表示该维度永远为 1 |
+| **`dim_param`**     | ONNX 张量形状描述中的符号占位符（symbolic dimension），以字符串命名表示该维度理论上可变化。如 `dim_param: "seq_len"`。但该标记仅影响 ONNX I/O 节点的形状声明，不改变内部计算图，若内部已被 Tracing 固化则无效 |
+| **`dynamic_axes`**  | PyTorch 导出 ONNX 时的参数，用于声明模型输入/输出中哪些维度是动态的，会为 I/O 节点生成 `dim_param` 标记。如 `{"x": {1: "seq_len"}}` 表示 `x` 的第 2 维可在推理时变化 |
+| **常量折叠**        | 图优化技术，静态计算仅依赖于常量初始化表达式的图的部分，在编译时提前算出结果，消除运行时计算的需要。例如 `y_lengths = 2 * x_length`，若 `x_length` 是常量 256，则 `y_lengths` 被折叠为常量 512 |
+| **`onnxsim`**       | ONNX 模型简化工具，通过常量折叠、冗余节点消除、算子融合等方式优化 ONNX 模型，可能将 `dim_param` 固化为 `dim_value` |
+| **`dynamic_input`** | RKNN 转换时的参数，用于配置模型支持动态形状输入。RKNN 需要在转换时列出所有可能用到的形状组合（预设菜单模式），NPU 为每种组合生成优化指令，推理时从预设中选择 |
+| **INT8 量化**       | 将模型权重和激活从 FP32 映射到 INT8，体积可缩小至 FP32 的 1/4（减少 75%），推理速度提升 3-5 倍，精度损失可控 |
+| **FP16 量化**       | 将模型从 FP32 转换为 FP16（半精度浮点数），体积减小约 50%，精度损失几乎可忽略 |
+| **校准数据**        | INT8 量化时用于统计模型各层激活值分布的数据集，量化工具据此计算 scale（缩放因子）和 zero_point（零点），决定 FP32 到 INT8 的映射方式。校准数据必须来自真实推理场景，随机数校准可通过 build 但模型输出异常 |
+| **`dataset.txt`**   | RKNN 量化时校准数据的索引文件，每行一个完整样本，包含该样本所有输入张量的 `.npy` 文件路径。文件数量必须与 ONNX 模型输入数量一致，顺序必须与 `graph.input` 顺序一致 |
+| **`MatMul`**        | 矩阵乘法，深度学习中最基础的计算操作之一。TTS 模型中大量存在，对张量形状敏感，多长度动态 shape 下易触发 `dimension mismatch` 错误 |
+| **`ScatterND`**     | ONNX 算子，根据索引将更新值写入张量指定位置。MeloTTS Encoder 的 SDP 模块使用该算子构造形状，其输出形状依赖动态索引，是 Encoder 动态转换失败的原因之一 |
+| **`Expand`**        | ONNX 算子，将张量广播到目标形状。当目标形状包含 `dim_param` 时，RKNN 常量折叠无法确定具体形状，报 `invalid expand shape`。开启 `do_constant_folding=True` 可将其折叠为具体值 |
+| **SDP**             | Stochastic Duration Predictor（随机时长预测器），MeloTTS Encoder 内部模块，用于预测每个音素的发音时长。该模块使用 `ScatterND` 和 `Slice` 构造形状，是 Encoder 动态转换失败的主要原因 |
 
-## 九、附录
 
 ### 仓库链接
 
 - MeloTTS：https://github.com/kyshipit/MeloTTS
-- tech‑notes：https://github.com/kyshipit/tech-notes
+- [MeloTTS RKNN 量化部署踩坑记录](https://github.com/kyshipit/tech-notes/blob/main/deploy/melotts-rknn量化部署踩坑记录.md)：https://github.com/kyshipit/tech-notes
