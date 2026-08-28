@@ -93,6 +93,10 @@
   > ROS2 Jazzy + WSL2 Ubuntu 24.04，图像传输卡顿、丢帧、命令卡死——排查了 WiFi 丢包率、压缩话题、异步编码、QoS 配置。
   > 最终通过三项措施解决：① 发布端启用压缩话题；② 将编码移至独立线程实现异步发布；③ 订阅端显式指定 BEST_EFFORT QoS。
 
+- [x86交叉编译ROS2 Jazzy 到 rk3588](./ros/交叉编译ROS2踩坑记录.md)
+  `#交叉编译工具链 #cmake #CMakeLists.txt`
+  > 配置双sysroot、工具链文件与CMakeLists，解决Python生成器禁用、系统库缺失及链接路径等问题记录。
+
 <p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
 
 ---
