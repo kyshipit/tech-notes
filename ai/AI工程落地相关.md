@@ -1,3 +1,8 @@
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2026 KY (kyshipit)
+-->
+
 # AI工程落地相关
 
 # 第一部分：AI整体认知框架

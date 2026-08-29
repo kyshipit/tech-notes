@@ -1,3 +1,8 @@
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2026 KY (kyshipit)
+-->
+
 # x86 交叉编译 ROS2 Jazzy 到 ARM64：从零跑通 + 踩坑实录
 
 ## 一、为什么要在 x86 电脑上交叉编译？

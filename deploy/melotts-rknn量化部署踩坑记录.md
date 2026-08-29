@@ -1,3 +1,8 @@
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2026 KY (kyshipit)
+-->
+
 # MeloTTS RKNN 量化部署踩坑记录
 
 > 本文档适合第一次接触 AI 模型部署的开发者阅读。内容涵盖从 PyTorch 模型到 RK3588 NPU 推理的全过程，包含所有踩坑记录、技术细节和最终结论。

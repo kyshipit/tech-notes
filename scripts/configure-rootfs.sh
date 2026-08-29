@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2026 KY (kyshipit)
+
 #!/bin/bash
 set -e
 

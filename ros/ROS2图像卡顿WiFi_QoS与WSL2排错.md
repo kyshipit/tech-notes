@@ -1,3 +1,8 @@
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2026 KY (kyshipit)
+-->
+
 # ROS2 图像卡顿：WiFi、QoS 与 WSL2排错
 
 ## 摘要

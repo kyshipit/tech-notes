@@ -1,3 +1,8 @@
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2026 KY (kyshipit)
+-->
+
 # x86 宿主机构建 ARM64 Ubuntu 24\.04 rootfs 报错解决记录
 
 x86宿主机构建ARM64 Ubuntu 24.04 rootfs时，systemd postinst脚本因qemu-user-static不支持OFD锁而失败，通过升级QEMU 8.0.x解决。

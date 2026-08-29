@@ -1,3 +1,8 @@
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2026 KY (kyshipit)
+-->
+
 # 第二篇：GDB动态调试完全指南——从coredump分析到主动调试
 
 > **适用场景：**

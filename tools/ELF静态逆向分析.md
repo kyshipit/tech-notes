@@ -1,3 +1,8 @@
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2026 KY (kyshipit)
+-->
+
 # 第一篇：ELF静态逆向分析——Ghidra从安装到反编译重建源码
 
 > **适用场景**：你只有一个二进制可执行文件，没有源代码，想搞清楚这个程序干了什么，甚至恢复出接近源码的逻辑。

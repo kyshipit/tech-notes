@@ -1,4 +1,9 @@
-# **Ubuntu 24.04 (Noble) 完整移植**
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2026 KY (kyshipit)
+-->
+
+# Ubuntu 24.04 (Noble) 完整移植
 
 ## 一、环境准备
 
