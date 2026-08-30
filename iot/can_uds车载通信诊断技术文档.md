@@ -1,3 +1,8 @@
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2026 KY (kyshipit)
+-->
+
 # 一、CAN 总线
 
 ## 1.1、概述
