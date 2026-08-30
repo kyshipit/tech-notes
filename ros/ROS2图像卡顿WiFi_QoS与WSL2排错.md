@@ -447,7 +447,7 @@ ros2 run rqt_image_view rqt_image_view --ros-args \
 异常情况（策略不匹配）：
 
 ```text
-发布端 (BEST_EFFORT) → 数据包 → 订阅端 (RELIABLE)
+    发布端 (BEST_EFFORT) → 数据包 → 订阅端 (RELIABLE)
                                      ↓
                               检测到丢包 → 发送 NACK（负确认）
                                      ↓
