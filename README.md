@@ -195,8 +195,9 @@
 ## 🏠 个人仓
 > 开源项目链接
 
-- [eai-rk3588](https://github.com/kyshipit/eai-rk3588) — 基于插件的 RK3588 边缘推理平台，多线程流水线、RKNN 适配器、RKLLM 对话、协调器驱动的多槽位激活
-- [MeloTTS](https://github.com/kyshipit/MeloTTS) — MeloTTS ONNX 导出 + RKNN 部署（RK3588），INT8 量化和部署
+- [eai-rk3588](https://github.com/kyshipit/eai-rk3588) — 基于插件的 RK3588 边缘推理平台，多线程流水线、RKNN 适配器、RKLLM 对话、协调器驱动的多槽位激活。
+- [MeloTTS](https://github.com/kyshipit/MeloTTS) — MeloTTS ONNX 导出 + RKNN 部署（RK3588），INT8 量化和部署。
+- [ros-robot](https://github.com/kyshipit/ros-robot) —基于 ROS2 的可扩展边缘 AI 机器人平台，内置 YOLO、SCRFD 模型，并支持本地 RKLLM 对话及语音合成（TTS）。
 
 <p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
 
