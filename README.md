@@ -5,6 +5,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/kyshipit/tech-notes?style=flat-square)
 ![GitHub repo size](https://img.shields.io/github/repo-size/kyshipit/tech-notes?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/kyshipit/tech-notes?style=flat-square)
+<img src="https://komarev.com/ghpvc/?username=kyshipit&color=007ec6&style=flat-square&label=views"/>
 <a href="https://github.com/kyshipit/tech-notes">
   <img src="https://img.shields.io/badge/⭐️-给个Star-brightgreen?style=flat-square" alt="给个Star"/>
 </a>
