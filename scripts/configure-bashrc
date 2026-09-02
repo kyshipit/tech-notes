@@ -71,23 +71,35 @@ alias activate='source venv/bin/activate 2>/dev/null'
 
 # Git 完整工作流别名
 alias gs='git status'
+alias gss='git status -s'
 alias ga='git add'
 alias gaa='git add --all'
-alias gc='git commit -m'
+alias gap='git add -p'
+alias gc='git commit'
+alias gcm='git commit -m'
 alias gca='git commit --amend'
 alias gcan='git commit --amend --no-edit'
 alias gco='git checkout'
 alias gcb='git checkout -b'
 alias gb='git branch'
+alias gba='git branch -a'
 alias gbd='git branch -d'
+alias gbD='git branch -D'
 alias gl='git log --oneline --graph --decorate -20'
+alias gla='git log --oneline --graph --decorate --all -20'
 alias gd='git diff'
 alias gds='git diff --staged'
+alias gdw='git diff --word-diff'
 alias gp='git push'
-alias gpl='git pull'
 alias gpf='git push --force-with-lease'
+alias gpl='git pull'
+alias gpr='git pull --rebase'
 alias gst='git stash'
 alias gstp='git stash pop'
+alias gstl='git stash list'
+alias gr='git remote -v'
+alias gf='git fetch --all'
+alias gcl='git clone'
 
 # ========== 专业函数 ==========
 mkcd() { mkdir -p "$1" && cd "$1"; }
@@ -95,10 +107,6 @@ mkcd() { mkdir -p "$1" && cd "$1"; }
 ff() { find . -type f -name "*$1*" 2>/dev/null; }
 fd() { find . -type d -name "*$1*" 2>/dev/null; }
 fgrep() { find . -type f -exec grep -l "$1" {} + 2>/dev/null; }
-
-gz() { tar -czf "$1.tar.gz" "$1"; }
-tgz() { tar -xzf "$1"; }
-zipd() { zip -r "$1.zip" "$1"; }
 
 gac() { git add . && git commit -m "$1"; }
 gacp() { git add . && git commit -m "$1" && git push; }
@@ -150,6 +158,7 @@ timestamp() {
     fi
 }
 
+zipd() { zip -r "$1.zip" "$1"; }
 extract() {
     if [ -f "$1" ]; then
         echo "正在解压: $1"
@@ -188,6 +197,8 @@ cd() {
 in_git_repo() { git rev-parse --git-dir >/dev/null 2>&1; }
 
 BASHRC_COMPLETE=1
+
+source ~/.bash_prompt
 
  # ========== 加载提示符配置（颜色、git、conda、prompt_command） ==========
 source ~/.bash_prompt
