@@ -84,6 +84,10 @@
 ## 🦾 ROS2
 > 分类：ROS2 | WSL2 | 跨机通信 | Fast-DDS
 
+- [ROS2机器人仿真与导航完整工程实践](./ros/ROS2机器人仿真与导航完整工程实践.md)
+  `#ROS2 #机器人仿真 #导航 #工程实践`
+  > 从零搭建 ROS2 机器人仿真与导航系统，涵盖建模、仿真、导航算法等核心环节。
+
 - [WSL2 ROS2 跨机通信问题](./ros/WSL2-ROS2跨机通信问题.md)
   `#WSL2 #ROS2 #Fast-DDS #跨机通信 #多播发现`
   > WSL2 Ubuntu20.04/22.04/24.04 + ROS2 Foxy/Galactic/Humble/Rolling，跨机通信无法发现节点。
