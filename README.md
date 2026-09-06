@@ -71,6 +71,10 @@
 ## 🚀 量化部署
 > 分类：模型转换 | 量化部署 | RKNN | ONNX | NPU 推理
 
+- [RKNPU 模型量化部署原理手册](./deploy/RKNPU模型量化部署原理手册.md)
+  `#RKNN #量化 #ONNX #NPU #部署`
+  > 从 ONNX 到 NPU 指令，编译器内部做了什么，参数怎么配，以及为什么这么做。
+
 - [MeloTTS RKNN 量化部署踩坑记录](./deploy/melotts-rknn量化部署踩坑记录.md)
   `#MeloTTS #RKNN #INT8量化 #ONNX #RK3588 #NPU`
   > PyTorch → ONNX → RKNN 全流程部署，记录动态维度、假动态、INT8 量化、Less 算子冲突等核心踩坑点。
