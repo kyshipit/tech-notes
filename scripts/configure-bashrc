@@ -19,7 +19,7 @@ add_to_path() {
     [[ ":$PATH:" != *":$1:"* ]] && [[ -d "$1" ]] && export PATH="$1:$PATH"
 }
 add_to_path "$HOME/tools/bin"
-add_to_path "$JAVA_HOME/bin"
+[[ -n "$JAVA_HOME" ]] && add_to_path "$JAVA_HOME/bin"
 add_to_path "$HOME/.local/bin"
 
 # 保护层
@@ -31,20 +31,20 @@ BASHRC_LOADED=1
 HISTSIZE=2000
 HISTFILESIZE=5000
 HISTCONTROL=ignoredups:erasedups
-shopt -s histappend checkwinsize cmdhist lithist
+shopt -s histappend checkwinsize
 # 注意：PROMPT_COMMAND 将在 ~/.bash_prompt 中被重新定义（包含 prompt_command）
 
 # ========== 别名 ==========
-alias ls='eza --color=auto -F'
-alias l='eza -1 --color=auto -F'
-alias ll='eza -1a --git --header  --color=auto -F'
-alias la='eza -la --git --header --time-style=long-iso --color=auto -F'
-alias lh='eza -lh --git --header --time-style=long-iso --color=auto -F'
-alias lt='eza -l --sort modified -r --time-style=long-iso --color=auto -F'
-alias lsize='eza -l --sort size -r --color=auto -F'
-alias lr='eza -laR --color=auto -F'
+alias ls='eza --color=auto --classify=auto'
+alias l='eza -1 --color=auto --classify=auto'
+alias ll='eza -1a  --header  --color=auto --classify=auto'
+alias la='eza -la  --header --time-style=long-iso --color=auto --classify=auto'
+alias lh='eza -lh  --header --time-style=long-iso --color=auto --classify=auto'
+alias lt='eza -l --sort=modified -r --time-style=long-iso --color=auto --classify=auto'
+alias lsize='eza -l --sort=size -r --color=auto --classify=auto'
+alias lr='eza -laR --color=auto --classify=auto'
 ltree() {
-    eza -T --git --level="${2:-2}" --color=auto -F "${1:-.}"
+    eza -T --level="${2:-2}" --color=auto --classify=auto "${1:-.}"
 }
 
 alias rm='rm -I'
@@ -61,13 +61,14 @@ alias du='du -h'
 alias free='free -h'
 alias psg='ps aux | grep -v grep | grep -i'
 
-alias ports='netstat -tulanp'
+
 alias ping='ping -c 5'
 
 alias py='python3'
 alias pip='pip3'
 alias python='python3'
-alias activate='source venv/bin/activate 2>/dev/null'
+
+
 
 # Git 完整工作流别名
 alias gs='git status'
@@ -103,39 +104,17 @@ alias gcl='git clone'
 
 # ========== 专业函数 ==========
 mkcd() { mkdir -p "$1" && cd "$1"; }
-
-ff() { find . -type f -name "*$1*" 2>/dev/null; }
-fd() { find . -type d -name "*$1*" 2>/dev/null; }
-fgrep() { find . -type f -exec grep -l "$1" {} + 2>/dev/null; }
-
-gac() { git add . && git commit -m "$1"; }
-gacp() { git add . && git commit -m "$1" && git push; }
-gundo() { git reset --soft HEAD~1; }
-gwc() { git whatchanged -p --abbrev-commit --pretty=medium; }
-
+findd() { find . -type d -name "*$1*" 2>/dev/null; }
+grepf() { find . -type f -exec grep -l "$1" {} + 2>/dev/null; }
 bak() { cp "$1" "$1.$(date +%Y%m%d_%H%M%S).bak"; }
+dsize() { du -sh -- * | sort -hr; }
+count() { find . -type f -name "*.$1" | wc -l; }
+
 dif() {
     if command -v diff-so-fancy &>/dev/null; then
         diff -u "$1" "$2" | diff-so-fancy
     else
         diff -u "$1" "$2"
-    fi
-}
-
-dsize() { du -sh -- * | sort -hr; }
-count() { find . -type f -name "*.$1" | wc -l; }
-
-pkillf() {
-    local pids=$(ps aux | grep -i "$1" | grep -v grep | awk '{print $2}')
-    if [[ -n "$pids" ]]; then
-        echo "Terminating: $pids"
-        kill $pids 2>/dev/null
-        sleep 1
-        local still_alive=$(ps -o pid= -p $pids 2>/dev/null)
-        if [[ -n "$still_alive" ]]; then
-            echo "Force killing remaining: $still_alive"
-            kill -9 $still_alive 2>/dev/null
-        fi
     fi
 }
 
@@ -158,19 +137,18 @@ timestamp() {
     fi
 }
 
-zipd() { zip -r "$1.zip" "$1"; }
+zipd() { zip -r "$1.zip" "$1" -x "$1.zip"; }
 extract() {
     if [ -f "$1" ]; then
         echo "正在解压: $1"
         case "$1" in
-            *.tar|*.tar.gz|*.tar.bz2|*.tar.xz|*.tar.Z|*.tgz|*.tbz2)
-                tar xvf "$1" ;;
+            *.tar|*.tar.gz|*.tar.bz2|*.tar.xz|*.tar.Z|*.tgz|*.tbz2) tar xvf "$1" ;;
             *.bz2)   bunzip2 -v "$1" ;;
             *.gz)    gunzip -v "$1" ;;
             *.rar)   unrar x "$1" ;;
             *.zip)   unzip "$1" ;;
             *.7z)    7z x "$1" ;;
-            *.deb)   ar xv "$1" ;;
+            *.deb)   ar xv "$1" && tar xvf data.tar.* ;;
             *.Z)     uncompress -v "$1" ;;
             *.xz)    unxz -v "$1" ;;
             *)       echo "无法解压: $1" ;;
@@ -181,7 +159,7 @@ extract() {
 }
 
 # ========== dircolors（保留原样） ==========
-if [[ -x /usr/bin/dircolors ]]; then
+if command -v dircolors >/dev/null 2>&1; then
     if [[ -f ~/.dircolors ]]; then
         eval "$(dircolors -b ~/.dircolors)"
     else
@@ -191,17 +169,12 @@ fi
 
 # 智能 CD 命令
 cd() {
-    builtin cd "$@" && [[ $PWD != $HOME ]] && ls
+    builtin cd "$@" || return
+    [[ $PWD != "$HOME" ]] && ls
+    return 0
 }
 
-in_git_repo() { git rev-parse --git-dir >/dev/null 2>&1; }
-
-BASHRC_COMPLETE=1
-
-source ~/.bash_prompt
-
- # ========== 加载提示符配置（颜色、git、conda、prompt_command） ==========
-source ~/.bash_prompt
+[[ -f ~/.bash_prompt ]] && source ~/.bash_prompt
 
 # ==========================================
 # ~/.bash_prompt
@@ -221,7 +194,7 @@ PS_RESET='\[\033[0m\]'
 # ---------- Git 信息（分支 + 状态符号 +*%） ----------
 git_info() {
     local branch staged modified untracked
-    branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+    branch=$(git symbolic-ref --short HEAD 2>/dev/null) || branch=$(git rev-parse --short HEAD 2>/dev/null)
     [[ -z "$branch" ]] && return
     if git diff --quiet --cached 2>/dev/null; then staged=""; else staged="+"; fi
     if git diff --quiet 2>/dev/null; then modified=""; else modified="*"; fi
@@ -238,20 +211,24 @@ conda_info() {
     fi
 }
 
+# ---------- venv 环境（带括号） ----------
+venv_info() {
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        local env_name=$(basename "$VIRTUAL_ENV")
+        echo " ${PS_CYAN}(${env_name})${PS_RESET}"
+    fi
+}
+
 # ---------- 提示符生成函数 ----------
 prompt_command() {
-    local exit_code=$?
     local time_stamp="${PS_YELLOW}\t${PS_RESET}"
     local user_host="${PS_BOLD}${PS_GREEN}\u@\h${PS_RESET}"
     local path="${PS_BLUE}\w${PS_RESET}"
     local git_str="$(git_info)"
     local conda_str="$(conda_info)"
-
-    if [[ $exit_code -ne 0 ]]; then
-        PS1="${time_stamp} ${user_host}:${path}${git_str}${conda_str}\n${PS_RED}[${exit_code}] ${PS_GREEN}➜${PS_RESET} "
-    else
-        PS1="${time_stamp} ${user_host}:${path}${git_str}${conda_str}\n${PS_GREEN}➜${PS_RESET} "
-    fi
+    local venv_str="$(venv_info)"
+    
+    PS1="${time_stamp} ${user_host}:${path}${git_str}${conda_str}${venv_str}\n${PS_GREEN}➜${PS_RESET} "
 }
 
 # ---------- 挂载到 PROMPT_COMMAND（保留历史记录同步） ----------
