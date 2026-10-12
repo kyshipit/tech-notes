@@ -32,7 +32,6 @@ HISTSIZE=2000
 HISTFILESIZE=5000
 HISTCONTROL=ignoredups:erasedups
 shopt -s histappend checkwinsize
-# 注意：PROMPT_COMMAND 将在 ~/.bash_prompt 中被重新定义（包含 prompt_command）
 
 # ========== 别名 ==========
 alias ls='eza --color=auto --classify=auto'
@@ -47,35 +46,25 @@ ltree() {
     eza -T --level="${2:-2}" --color=auto --classify=auto "${1:-.}"
 }
 
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 alias rm='rm -I'
 alias cp='cp -i'
 alias mv='mv -i'
 alias mkdir='mkdir -p'
-
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-
 alias df='df -h'
 alias du='du -h'
 alias free='free -h'
 alias psg='ps aux | grep -v grep | grep -i'
-
-
-alias ping='ping -c 5'
-
 alias py='python3'
 alias pip='pip3'
 alias python='python3'
 
-
-
 # Git 完整工作流别名
 alias gs='git status'
-alias gss='git status -s'
 alias ga='git add'
 alias gaa='git add --all'
-alias gap='git add -p'
 alias gc='git commit'
 alias gcm='git commit -m'
 alias gca='git commit --amend'
@@ -85,12 +74,10 @@ alias gcb='git checkout -b'
 alias gb='git branch'
 alias gba='git branch -a'
 alias gbd='git branch -d'
-alias gbD='git branch -D'
 alias gl='git log --oneline --graph --decorate -20'
-alias gla='git log --oneline --graph --decorate --all -20'
+alias gla='git log --oneline --graph --decorate --all'
 alias gd='git diff'
 alias gds='git diff --staged'
-alias gdw='git diff --word-diff'
 alias gp='git push'
 alias gpf='git push --force-with-lease'
 alias gpl='git pull'
@@ -100,7 +87,6 @@ alias gstp='git stash pop'
 alias gstl='git stash list'
 alias gr='git remote -v'
 alias gf='git fetch --all'
-alias gcl='git clone'
 
 # ========== 专业函数 ==========
 mkcd() { mkdir -p "$1" && cd "$1"; }
@@ -158,7 +144,7 @@ extract() {
     fi
 }
 
-# ========== dircolors（保留原样） ==========
+# =========== dircolors ============
 if command -v dircolors >/dev/null 2>&1; then
     if [[ -f ~/.dircolors ]]; then
         eval "$(dircolors -b ~/.dircolors)"
@@ -231,5 +217,5 @@ prompt_command() {
     PS1="${time_stamp} ${user_host}:${path}${git_str}${conda_str}${venv_str}\n${PS_GREEN}➜${PS_RESET} "
 }
 
-# ---------- 挂载到 PROMPT_COMMAND（保留历史记录同步） ----------
+# ---------- 挂载到 PROMPT_COMMAND ------------
 PROMPT_COMMAND="history -a; history -n; prompt_command"
