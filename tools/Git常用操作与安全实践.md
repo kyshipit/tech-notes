@@ -1,3 +1,5 @@
+[English](../en/tools/Git-Common-Operations-and-Security-Practices.md) | **简体中文**
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

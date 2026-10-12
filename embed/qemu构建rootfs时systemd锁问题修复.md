@@ -1,3 +1,5 @@
+[English](../en/embed/QEMU-Rootfs-Build-Systemd-Lock-Fix.md) | **简体中文**
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

@@ -1,3 +1,5 @@
+**English** | [简体中文](../../ai/AI工程落地相关.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)
@@ -73,7 +75,7 @@ LLM API calls **are completely stateless** , each request is independent, and th
 
 The essence of multi-turn dialogue is **to manually carry the complete history of dialogue messages** with each API request. All AI dialogue and AI programming tools on the market are based on this logic at the underlying level, with only the upper layer encapsulating optimization strategies such as context compression, redundancy filtering, and history pruning.
 
-# Part Two: Principles of Quantitative Deployment
+# Part Two: Principles of Quantization
 
 ## 2.1 Deep Learning
 

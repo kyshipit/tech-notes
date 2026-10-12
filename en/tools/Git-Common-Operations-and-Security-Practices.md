@@ -1,3 +1,5 @@
+**English** | [简体中文](../../tools/Git常用操作与安全实践.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

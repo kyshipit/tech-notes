@@ -1,9 +1,11 @@
+**English** | [简体中文](../../deploy/melotts-rknn量化部署踩坑记录.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)
 -->
 
-# MeloTTS RKNN Quantitative Deployment Troubleshooting Log
+# MeloTTS RKNN Quantization Troubleshooting Log
 
 > This document is suitable for developers who are new to AI model deployment. It covers the entire process from PyTorch model to RK3588 NPU inference, including all the pitfalls encountered, technical details, and final conclusions.
 

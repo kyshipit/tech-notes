@@ -1,3 +1,5 @@
+**English** | [简体中文](../../ros/交叉编译ROS2踩坑记录.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)
@@ -5,7 +7,7 @@ SPDX-FileCopyrightText: 2026 KY (kyshipit)
 
 # Cross-compiling ROS2 Jazzy to ARM64 from x86: Getting it working from scratch + Troubleshooting Experience
 
-## Why do we need to cross-compile on x86 computers?
+## I. Why do we need to cross-compile on x86 computers?
 
 The board-side `colcon build` is only suitable for early-stage demo verification. As project dependencies increase, the time for a full board-side compilation can balloon from a few minutes to over ten minutes or even longer. Meanwhile, embedded development boards have limited memory and storage, which can easily trigger memory overflows or disk warnings when the project is large. Compilation also consumes runtime and debugging resources. Furthermore, after integrating CI/CD, board-side compilation is difficult to standardize, and environmental differences can easily introduce compatibility issues.
 
@@ -13,7 +15,7 @@ Cross-compilation decouples the build process from the target hardware, trading 
 
 ---
 
-## Second, understand a few core concepts.
+## II. Understand a few core concepts.
 
 ### 2.1 What is cross-compilation?
 

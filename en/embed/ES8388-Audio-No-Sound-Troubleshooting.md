@@ -1,3 +1,5 @@
+**English** | [简体中文](../../embed/es8388音频无声排查.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

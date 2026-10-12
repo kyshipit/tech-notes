@@ -1,3 +1,5 @@
+**English** | [简体中文](../../ros/ROS2图像卡顿WiFi_QoS与WSL2排错.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

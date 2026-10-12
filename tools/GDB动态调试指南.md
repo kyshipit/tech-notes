@@ -1,3 +1,5 @@
+[English](../en/tools/GDB-Dynamic-Debugging-Guide.md) | **简体中文**
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

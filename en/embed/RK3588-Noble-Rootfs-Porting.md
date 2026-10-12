@@ -1,3 +1,5 @@
+**English** | [简体中文](../../embed/rk3588移植noble版本rootfs.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

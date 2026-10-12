@@ -1,3 +1,5 @@
+**English** | [简体中文](../../embed/qemu构建rootfs时systemd锁问题修复.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

@@ -1,3 +1,5 @@
+**English** | [简体中文](../../iot/can_uds车载通信诊断技术文档.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

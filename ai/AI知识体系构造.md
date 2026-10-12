@@ -1,3 +1,5 @@
+[English](../en/ai/AI-Knowledge-System-Construction.md) | **简体中文**
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

@@ -1,3 +1,5 @@
+**English** | [简体中文](../../ros/WSL2-ROS2跨机通信问题.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

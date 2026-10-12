@@ -1,3 +1,5 @@
+**English** | [简体中文](../../deploy/RKNPU模型量化部署原理手册.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

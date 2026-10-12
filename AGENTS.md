@@ -1,3 +1,5 @@
+[English](en/AGENTS.md) | **简体中文**
+
 # AGENTS.md
 
 本仓库是个人技术笔记，涵盖嵌入式、AI、机器人、IoT 等领域。

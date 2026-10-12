@@ -1,3 +1,5 @@
+**English** | [简体中文](../../tools/ELF静态逆向分析.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

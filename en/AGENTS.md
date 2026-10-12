@@ -1,3 +1,5 @@
+**English** | [简体中文](../AGENTS.md)
+
 # AGENTS.md
 
 This repository contains personal technical notes covering fields such as embedded systems, AI, robotics, and IoT.
@@ -5,7 +7,7 @@ This repository contains personal technical notes covering fields such as embedd
 ## Directory Structure
 
 - `AI/` - Large Models, Agents, RAG
-- `量化部署/` - ONNX, RKNN Quantitative Deployment
+- `量化部署/` - ONNX, RKNN Quantization
 - `ROS2/` - ROS2 installation and cross-machine communication
 - `嵌入式/` - rootfs build, driver porting
 - `IoT/` - CAN, Bluetooth, NFC

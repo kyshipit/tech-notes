@@ -1,3 +1,5 @@
+**English** | [简体中文](../../ros/ROS2机器人仿真与导航完整工程实践.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)

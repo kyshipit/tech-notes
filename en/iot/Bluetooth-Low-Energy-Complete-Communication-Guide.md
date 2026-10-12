@@ -1,3 +1,5 @@
+**English** | [简体中文](../../iot/蓝牙低功耗完整通信原理解析.md)
+
 <!--
 SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 KY (kyshipit)
