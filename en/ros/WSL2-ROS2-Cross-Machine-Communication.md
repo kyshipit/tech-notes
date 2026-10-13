@@ -412,5 +412,3 @@ Issues with NVIDIA IsaacSim + WSL2 mirror mode | https://forums.developer.nvidia
     │   原生 ROS2      │
     └─────────────────┘
 ```
-
-Supported environment: Windows 10/11 + WSL2 (Ubuntu 24.04) + ROS2 Jazzy
