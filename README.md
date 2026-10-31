@@ -1,26 +1,26 @@
-[English](en/README.md) | **简体中文**
+**English** | [简体中文](README.zh.md)
 
 <div align="center">
-  
-# 技术笔记
+
+# Technical Notes
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/kyshipit/tech-notes?style=flat-square)
 ![GitHub repo size](https://img.shields.io/github/repo-size/kyshipit/tech-notes?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/kyshipit/tech-notes?style=flat-square)
 <img src="https://komarev.com/ghpvc/?username=kyshipit&color=007ec6&style=flat-square&label=views"/>
 <a href="https://github.com/kyshipit/tech-notes">
-  <img src="https://img.shields.io/badge/⭐️-给个Star-brightgreen?style=flat-square" alt="给个Star"/>
+  <img src="https://img.shields.io/badge/⭐️-Give_a_Star-brightgreen?style=flat-square" alt="Give it a star"/>
 </a>
 
 <p>
   <a href="#-ai">AI</a> ·
-  <a href="#-量化部署">量化部署</a> ·
+  <a href="#-quantization">Quantization</a> ·
   <a href="#-ros2">ROS2</a> ·
-  <a href="#-嵌入式">嵌入式</a> ·
-  <a href="#-IoT">IoT</a> ·
-  <a href="#-工具">工具</a> ·
-  <a href="#-脚本">脚本</a> ·
-  <a href="#-个人仓">个人仓</a>
+  <a href="#-embedded">Embedded</a> ·
+  <a href="#-iot">IoT</a> ·
+  <a href="#-tools">Tools</a> ·
+  <a href="#-scripts">Scripts</a> ·
+  <a href="#-repos">Repos</a>
 </p>
 
 </div>
@@ -28,202 +28,203 @@
 ---
 
 > [!NOTE]
-> 📖 嵌入式、AI、机器人、IoT 等领域的技术笔记，持续更新中。
+> 📖 Technical notes on embedded systems, AI, robotics, IoT, and other related fields, continuously updated.
 
 ---
 
-## ✨ 内容概览
+## ✨ Content Overview
 
 <table align="center">
   <tr>
     <td nowrap align="center"><a href="#-ai"><b>🤖 AI</b></a></td>
-    <td nowrap align="center"><a href="#-量化部署"><b>🚀 量化部署</b></a></td>
+    <td nowrap align="center"><a href="#-quantization"><b>🚀 Quantization</b></a></td>
     <td nowrap align="center"><a href="#-ros2"><b>🦾 ROS2</b></a></td>
-    <td nowrap align="center"><a href="#-嵌入式"><b>🔄 嵌入式</b></a></td>
+    <td nowrap align="center"><a href="#-embedded"><b>🔄 Embedded</b></a></td>
   </tr>
   <tr>
-    <td nowrap align="center"><a href="#-IoT"><b>📡 IoT</b></a></td>
-    <td nowrap align="center"><a href="#-工具"><b>🛠 工具</b></a></td>
-    <td nowrap align="center"><a href="#-脚本"><b>📜 脚本</b></a></td>
-    <td nowrap align="center"><a href="#-个人仓"><b>🏠 个人仓</b></a></td>
+    <td nowrap align="center"><a href="#-iot"><b>📡 IoT</b></a></td>
+    <td nowrap align="center"><a href="#-tools"><b>🛠 Tools</b></a></td>
+    <td nowrap align="center"><a href="#-scripts"><b>📜 Scripts</b></a></td>
+    <td nowrap align="center"><a href="#-repos"><b>🏠 Repos</b></a></td>
   </tr>
 </table>
 
 ---
 
 <a id="-ai"></a>
+
 ## 🤖 AI
-> 分类：AI 全链路 | 知识体系 | Agent 架构
 
-- [AI 知识体系构造](./ai/AI知识体系构造.md)
-  `#AI #Agent #RAG #大模型 #工程化`
-  > AI 领域全链路知识体系构造，从底层数学到工业级 Agent 的完整技术栈。
-  > 涵盖大脑（大模型）、记忆模块、规划模块、工具调用、Skills、RAG 检索、模型工程化、Agent 工程化等模块。
-  > 核心主线：构建能解决实际问题的工业级智能体 Agent。
+> Categories: AI End-to-End | Knowledge System | Agent Architecture
 
-- [AI 工程落地相关](./ai/AI工程落地相关.md)
-  `#AI #Agent #RAG #大模型 #工程化`
-  > AI 工程落地相关技术笔记，涵盖模型优化、量化部署、Agent 架构、技能体系、工具链等模块。
+- [AI Knowledge System Construction](en/ai/AI-Knowledge-System-Construction.md) `#AI #Agent #RAG #LLM #Engineering`
 
-<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+    > This document outlines a comprehensive knowledge system for the AI field, encompassing a complete technology stack from underlying mathematics to industrial-grade agents. It covers modules such as the "brain" (large-scale model), memory modules, planning modules, tool invocation, skills, RAG retrieval, model engineering, and agent engineering. The core focus is on building industrial-grade intelligent agents capable of solving real-world problems.
+
+- [AI Engineering Implementation](en/ai/AI-Engineering-Implementation.md) `#AI #Agent #RAG #LLM #Engineering`
+
+    > This is a collection of technical notes related to AI engineering implementation, covering modules such as model optimization, quantization, agent architecture, skill systems, and toolchains.
+
+<p align="right">(<a href="#technical-notes">Back to top</a>)</p>
 
 ---
 
-<a id="-量化部署"></a>
-## 🚀 量化部署
-> 分类：模型转换 | 量化部署 | RKNN | ONNX | NPU 推理
+<a id="-quantization"></a>
 
-- [RKNPU 模型量化部署原理手册](./deploy/RKNPU模型量化部署原理手册.md)
-  `#RKNN #量化 #ONNX #NPU #部署`
-  > 从 ONNX 到 NPU 指令，编译器内部做了什么，参数怎么配，以及为什么这么做。
+## 🚀 Quantization
 
-- [MeloTTS RKNN 量化部署踩坑记录](./deploy/melotts-rknn量化部署踩坑记录.md)
-  `#MeloTTS #RKNN #INT8量化 #ONNX #RK3588 #NPU`
-  > PyTorch → ONNX → RKNN 全流程部署，记录动态维度、假动态、INT8 量化、Less 算子冲突等核心踩坑点。
-  > 最终方案：FP16 Encoder + FP16 Decoder（推荐，音质清晰），INT8 Decoder（备选，体积小但音质有损）。
+> Categories: Model Conversion | Quantization Deployment | RKNN | ONNX | NPU Inference
 
-<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+- [RKNPU Model Quantization Deployment Principles Manual](en/deploy/RKNPU-Model-Quantization-Deployment-Principles.md) `#RKNN #Quantization #ONNX #NPU #Deployment`
+
+    > From ONNX to NPU instructions, what does the compiler do internally, how are parameters configured, and why?
+
+- [MeloTTS RKNN Quantization Deployment Pitfalls](en/deploy/MeloTTS-RKNN-Quantization-Deployment-Pitfalls.md) `#MeloTTS #RKNN #INT8Quantization #ONNX #RK3588 #NPU`
+
+    > This document records the entire deployment process of PyTorch → ONNX → RKNN, documenting key pitfalls encountered, including dynamic dimensions, pseudo-dynamics, INT8 quantization, and Less operator conflicts. The final solution was: FP16 Encoder + FP16 Decoder (recommended for clear audio quality), and INT8 Decoder (an alternative, smaller in size but with some loss of audio quality).
+
+<p align="right">(<a href="#technical-notes">Back to top</a>)</p>
 
 ---
 
 <a id="-ros2"></a>
+
 ## 🦾 ROS2
-> 分类：ROS2 | WSL2 | 跨机通信 | Fast-DDS
 
-- [ROS2机器人仿真与导航完整工程实践](./ros/ROS2机器人仿真与导航完整工程实践.md)
-  `#ROS2 #机器人仿真 #导航 #工程实践`
-  > 从零搭建 ROS2 机器人仿真与导航系统，涵盖建模、仿真、导航算法等核心环节。
+> Categories: ROS2 | WSL2 | Cross-machine communication | Fast-DDS
 
-- [WSL2 ROS2 跨机通信问题](./ros/WSL2-ROS2跨机通信问题.md)
-  `#WSL2 #ROS2 #Fast-DDS #跨机通信 #多播发现`
-  > WSL2 Ubuntu20.04/22.04/24.04 + ROS2 Foxy/Galactic/Humble/Rolling，跨机通信无法发现节点。
-  > 排查 Fast-DDS 多播发现机制、网络接口绑定、环境变量配置等问题，最终解决方案：统一 DDS 域 ID + 强制子网内多播发现 + 指定网卡 eth0。
+- [Complete Engineering Practice for ROS2 Robot Simulation and Navigation](en/ros/ROS2-Robot-Simulation-and-Navigation-Engineering-Practice.md) `#ROS2 #RobotSimulation #Navigation #EngineeringPractice`
 
-- [ROS2 图像卡顿 WiFi QoS 与 WSL2 排错](./ros/ROS2图像卡顿WiFi_QoS与WSL2排错.md)
-  `#ROS2 #WiFi #QoS #WSL2 #图像卡顿 #调试`
-  > ROS2 Jazzy + WSL2 Ubuntu 24.04，图像传输卡顿、丢帧、命令卡死——排查了 WiFi 丢包率、压缩话题、异步编码、QoS 配置。
-  > 最终通过三项措施解决：① 发布端启用压缩话题；② 将编码移至独立线程实现异步发布；③ 订阅端显式指定 BEST_EFFORT QoS。
+    > This project builds a ROS2 robot simulation and navigation system from scratch, covering core aspects such as modeling, simulation, and navigation algorithms.
 
-- [x86交叉编译ROS2 Jazzy 到 rk3588](./ros/交叉编译ROS2踩坑记录.md)
-  `#交叉编译工具链 #cmake #CMakeLists.txt`
-  > 配置双sysroot、工具链文件与CMakeLists，解决Python生成器禁用、系统库缺失及链接路径等问题记录。
+- [WSL2 ROS2 Cross-Machine Communication Issue](en/ros/WSL2-ROS2-Cross-Machine-Communication.md) `#WSL2 #ROS2 #Fast-DDS #CrossMachineCommunication #MulticastDiscovery`
 
-<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+    > WSL2 Ubuntu 20.04/22.04/24.04 + ROS2 Foxy/Galactic/Humble/Rolling, cross-machine communication fails to discover nodes. After troubleshooting issues with the Fast-DDS multicast discovery mechanism, network interface binding, and environment variable configuration, the final solution was: unified DDS domain ID + forced intra-subnet multicast discovery + specified network interface eth0.
 
----
+- [Troubleshooting ROS2 Image Stuttering, WiFi QoS, and WSL2 Issues](en/ros/ROS2-Image-Stuttering-WiFi-QoS-and-WSL2-Troubleshooting.md) `#ROS2 #WiFi #QoS #WSL2 #ImageStuttering #Debugging`
 
-<a id="-嵌入式"></a>
-## 🔄 嵌入式
-> 分类：交叉编译 | Rootfs 构建 | QEMU chroot | 驱动移植 | 问题排查
+    > On a ROS2 Jazzy + WSL2 Ubuntu 24.04 system, issues included image transmission stuttering, frame drops, and command crashes. Troubleshooting involved checking WiFi packet loss rate, compression settings, asynchronous encoding, and QoS configuration. The solution was ultimately achieved through three measures: ① Enabling compression on the publishing end; ② Moving encoding to a separate thread for asynchronous publishing; ③ Explicitly specifying the BEST_EFFORT QoS on the subscription end.
 
-- [Failed to take /etc/passwd lock: Invalid argument](./embed/qemu构建rootfs时systemd锁问题修复.md)
-  `#Ubuntu24.04 #systemd #QEMU #ARM64_rootfs`
-  > x86 VMware-Ubuntu20.04 构建 ARM64 Ubuntu 24.04 rootfs 根文件系统时的记录。
-  > 解决 systemd v254+ OFD 锁不兼容报错，汇总踩坑记录、多套可落地修复脚本、底层原理分析。
+- [Cross-Compiling ROS2 Jazzy to RK3588 on x86](en/ros/Cross-Compiling-ROS2-Pitfalls.md) `#CrossCompileToolchain #cmake #CMakeLists.txt`
 
-- [RK3588 Ubuntu 移植摄像头显示问题](./embed/camera显示问题排查.md)
-  `#RK3588 #MIPI #摄像头 #DRM #Ubuntu24.04`
-  > ATK-DLRK3588 开发板 + 5.5 寸 MIPI 屏幕，从 Buildroot 移植 Ubuntu 后摄像头画面显示异常。
-  > 排查 DRM 显示框架、MIPI DSI 配置、摄像头驱动适配等问题。
+    > This document records the configuration of dual sysroots, toolchain files, and CMakeLists to resolve issues such as disabled Python generators, missing system libraries, and link paths.
 
-- [RK3588 ES8388 音频无声问题](./embed/es8388音频无声排查.md)
-  `#RK3588 #ES8388 #音频 #ALSA #Ubuntu24.04`
-  > ES8388 芯片内部 OUT1/OUT2 输出级开关默认关闭，导致信号无法到达扬声器。
-  > Buildroot 通过 UCM 自动开启，Ubuntu 需手动 amixer 开启或配置开机自启。
-
-- [RK3588 移植 Noble 版本 rootfs](./embed/rk3588移植noble版本rootfs.md)
-  `#RK3588 #Ubuntu24.04 #rootfs`
-  > RK3588 构建与移植 Ubuntu 24.04 rootfs ，支持 QEMU chroot、驱动移植。
-
-<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+<p align="right">(<a href="#technical-notes">Back to top</a>)</p>
 
 ---
 
-<a id="-IoT"></a>
+<a id="-embedded"></a>
+
+## 🔄 Embedded
+
+> Categories: Cross-compilation | Rootfs build | QEMU chroot | Driver porting | Troubleshooting
+
+- [Failed to take /etc/passwd lock: Invalid argument](en/embed/QEMU-Rootfs-Build-Systemd-Lock-Fix.md) `#Ubuntu24.04 #systemd #QEMU #ARM64_rootfs`
+
+    > This document documents my experience building an ARM64 Ubuntu 24.04 rootfs root filesystem using x86 VMware-Ubuntu 20.04. It includes solutions to incompatibility errors caused by systemd v254 + OFD locks, summarizing the pitfalls encountered, providing multiple workable repair scripts, and analyzing the underlying principles.
+
+- [RK3588 Ubuntu Porting Camera Display Issue](en/embed/Camera-Display-Troubleshooting.md) `#RK3588 #MIPI #Camera #DRM #Ubuntu24.04`
+
+    > An ATK-DLRK3588 development board with a 5.5-inch MIPI screen experienced camera display issues after porting Ubuntu from Buildroot. Troubleshooting included issues with the DRM display framework, MIPI DSI configuration, and camera driver compatibility.
+
+- [RK3588 ES8388 Audio No Sound Issue](en/embed/ES8388-Audio-No-Sound-Troubleshooting.md) `#RK3588 #ES8388 #Audio #ALSA #Ubuntu24.04`
+
+    > The ES8388 chip's internal OUT1/OUT2 output stage switches are off by default, preventing signals from reaching the speaker. Buildroot enables this automatically via UCM; on Ubuntu, it requires manual enabling via amixer or configuration for automatic startup.
+
+- [Porting Noble Version Rootfs to RK3588](en/embed/RK3588-Noble-Rootfs-Porting.md) `#RK3588 #Ubuntu24.04 #rootfs`
+
+    > RK3588 is used to build and port the Ubuntu 24.04 rootfs, supporting QEMU chroot and driver porting.
+
+<p align="right">(<a href="#technical-notes">Back to top</a>)</p>
+
+---
+
+<a id="-iot"></a>
+
 ## 📡 IoT
-> 分类：CAN | 蓝牙 | NFC | 其他外设接口
 
-- [CAN UDS 车辆通信诊断技术文档](./iot/can_uds车载通信诊断技术文档.md)
-  `#CAN #UDS #ISO14229 #ISO15765 #诊断协议`
-  > CAN 总线通信原理、UDS 协议栈、ISO14229/ISO15765 标准、诊断服务 SID、子功能 SubFunction、否定响应码 NRC。
-  > 车辆诊断工具与 ECU 通信流程，UDS 请求/响应报文格式，常用诊断服务解析。
+> Categories: CAN | Bluetooth | NFC | Other Peripheral Interfaces
 
-- [蓝牙低功耗通信原理解析](./iot/蓝牙低功耗完整通信原理解析.md)
-  `#BLE #蓝牙 #低功耗 #通信协议 #安全机制`
-  > 蓝牙低功耗通信原理、广播与扫描、连接建立、链路加密、应用认证、指令交互、功耗管理。
-  > 包含 RPA / Replay Attack / Whitelist / IRK / CSRK 等安全机制，Dynamic Interval / OTA A/B Partition 等功耗与容错设计。
+- [CAN UDS Vehicle Communication Diagnostic Technology Documentation](en/iot/CAN-UDS-Automotive-Diagnostic-Technical-Guide.md) `#CAN #UDS #ISO14229 #ISO15765 #DiagnosticProtocol`
 
-- [NFC技术原理与汽车钥匙应用](./iot/NFC技术原理与汽车钥匙应用.md)
-  `#NFC #近场通信 #数字钥匙 #ISO 15765-2`
-  > 系统讲解NFC技术原理（13.56MHz、电磁感应、负载调制、三种工作模式）。
-  > 汽车NFC钥匙系统的通用硬件架构（天线/射频控制器/MCU/HSM/CAN总线）。
-  > 汽车诊断通信协议（ISO 14229 UDS和ISO 15765-2传输层），包括四种帧类型、安全访问机制、例程控制的格式解析。
+    > CAN bus communication principles, UDS protocol stack, ISO14229/ISO15765 standards, diagnostic service SID, sub-function, negative response code (NRC). Communication flow between vehicle diagnostic tools and ECUs, UDS request/response message format, and parsing of commonly used diagnostic services.
 
+- [Bluetooth Low Energy Communication Principles Explained](en/iot/Bluetooth-Low-Energy-Complete-Communication-Guide.md) `#BLE #Bluetooth #LowPower #CommunicationProtocol #SecurityMechanism`
 
-<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+    > Bluetooth Low Energy communication principles, broadcasting and scanning, connection establishment, link encryption, application authentication, command interaction, and power management. Includes security mechanisms such as RPA/Replay Attack/Whitelist/IRK/CSRK, and power consumption and fault tolerance designs such as Dynamic Interval/OTA A/B Partition.
+
+- [NFC Technology Principles and Car Key Applications](en/iot/NFC-Technology-and-Car-Key-Applications.md) `#NFC #NearFieldCommunication #DigitalKey #ISO15765-2`
+
+    > This course provides a systematic explanation of NFC technology principles (13.56MHz, electromagnetic induction, load modulation, and three operating modes). It covers the general hardware architecture of automotive NFC key systems (antenna/RF controller/MCU/HSM/CAN bus). The course also explains automotive diagnostic communication protocols (ISO 14229 UDS and ISO 15765-2 transport layer), including four frame types, secure access mechanisms, and routine control format parsing.
+
+<p align="right">(<a href="#technical-notes">Back to top</a>)</p>
 
 ---
 
-<a id="-工具"></a>
-## 🛠 工具
-> 分类：调试工具 | 反汇编 | 逆向分析
+<a id="-tools"></a>
 
-- [ELF 静态逆向分析](./tools/ELF静态逆向分析.md)
-  `#ELF #静态分析 #逆向 #Ghidra #radare2`
-  > ELF 文件结构、ELF 头、节区表、符号表、重定位表、动态链接表。
-  > 静态分析流程：strings → Ghidra 反编译 → radare2 高级分析 → 重建源代码。
+## 🛠 Tools
 
-- [GDB 动态调试指南](./tools/GDB动态调试指南.md)
-  `#GDB #调试 #动态分析 #断点 #内存检查`
-  > GDB 命令速查表、快速调试流程、内存检查、条件断点、用户自定义命令。
+> Categories: Debugging Tools | Disassembler | Reverse Engineering
 
-- [Git 常用操作与安全实践](./tools/Git常用操作与安全实践.md)
-  `#Git #版本控制 #安全实践`
-  > Git 常用操作、分支管理、合并策略、冲突解决、安全实践。
+- [ELF Static Reverse Engineering](en/tools/ELF-Static-Reverse-Engineering-Analysis.md) `#ELF #StaticAnalysis #ReverseEngineering #Ghidra #radare2`
 
-<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+    > ELF file structure, ELF header, section table, symbol table, relocation table, dynamic link table. Static analysis workflow: strings → Ghidra decompilation → radare2 advanced analysis → reconstruct source code.
 
----
+- [GDB Dynamic Debugging Guide](en/tools/GDB-Dynamic-Debugging-Guide.md) `#GDB #Debugging #DynamicAnalysis #Breakpoints #MemoryInspection`
 
-<a id="-脚本"></a>
-## 📜 脚本
-> 项目辅助构建脚本与环境配置
+    > GDB command cheat sheet, quick debugging process, memory check, conditional breakpoints, user-defined commands.
 
-- [configure-rootfs.sh](./scripts/configure-rootfs.sh)
-  `#RK3588 #Ubuntu #rootfs #打包脚本`
-  > RK3588 Ubuntu 20.04/24.04 rootfs 构建与打包脚本。
-  > 支持从 Buildroot target 目录提取 + rkaiq 摄像头引擎 deb 包的自动安装。
+- [Common Git Operations and Security Practices](en/tools/Git-Common-Operations-and-Security-Practices.md) `#Git #VersionControl #SecurityPractices`
 
-- [configure-bashrc](./scripts/configure-bashrc)
-  `#bash #shell #环境配置`
-  > Bash 环境配置文件：智能 PATH 管理、语言环境、历史记录、Shell 行为优化。
+    > Git common operations, branch management, merge strategies, conflict resolution, and security practices.
 
-- [configure-vimrc](./scripts/configure-vimrc)
-  `#vim #编辑器配置`
-  > 极简无插件 Vim 配置，保留常用快捷键，支持 Linux/WSL 剪贴板。
-
-<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+<p align="right">(<a href="#technical-notes">Back to top</a>)</p>
 
 ---
 
-<a id="-个人仓"></a>
-## 🏠 个人仓
-> 开源项目链接
+<a id="-scripts"></a>
 
-- [eai-rk3588](https://github.com/kyshipit/eai-rk3588) — 基于插件的 RK3588 边缘推理平台，多线程流水线、RKNN 适配器、RKLLM 对话、协调器驱动的多槽位激活。
-- [MeloTTS](https://github.com/kyshipit/MeloTTS) — MeloTTS ONNX 导出 + RKNN 部署（RK3588），INT8 量化和部署。
-- [ros-robot](https://github.com/kyshipit/ros-robot) —基于 ROS2 的可扩展边缘 AI 机器人平台，内置 YOLO、SCRFD 模型，并支持本地 RKLLM 对话及语音合成（TTS）。
+## 📜 Scripts
 
-<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+> Project-aided build scripts and environment configuration
+
+- [configure-rootfs.sh](/scripts/configure-rootfs.sh) `#RK3588 #Ubuntu #rootfs #PackagingScript`
+
+    > RK3588 is a build and packaging script for Ubuntu 20.04/24.04 rootfs. It supports automatic installation of the rkaiq camera engine deb package extracted from the Buildroot target directory.
+
+- [configure-bashrc](/scripts/configure-bashrc) `#bash #shell #EnvironmentConfiguration`
+
+    > Bash environment configuration file: intelligent PATH management, locale, history, and shell behavior optimization.
+
+- [configure-vimrc](/scripts/configure-vimrc) `#vim #EditorConfiguration`
+
+    > Minimal Vim configuration without plugins, retains commonly used keyboard shortcuts, and supports Linux/WSL clipboard.
+
+<p align="right">(<a href="#technical-notes">Back to top</a>)</p>
 
 ---
 
-如果对你有所帮助的话，请点个 Star ⭐ 支持一下，谢谢！
+<a id="-repos"></a>
+
+## 🏠 Repos
+
+> Open source project links
+
+- [eai-rk3588](https://github.com/kyshipit/eai-rk3588) — A plug-in-based RK3588 edge inference platform with multi-threaded pipeline, RKNN adapter, RKLLM dialogue, and coordinator-driven multi-slot activation.
+- [MeloTTS](https://github.com/kyshipit/MeloTTS) — MeloTTS ONNX Export + RKNN Deployment (RK3588), INT8 Quantization and Deployment.
+- [ros-robot](https://github.com/kyshipit/ros-robot) — a scalable edge AI robot platform based on ROS2, with built-in YOLO and SCRFD models, and supports local RKLLM dialogue and text-to-speech (TTS).
+
+<p align="right">(<a href="#technical-notes">Back to top</a>)</p>
 
 ---
 
-## 📄 许可证
+If this was helpful, please give it a Star ⭐ to show your support, thank you!
 
-笔记内容采用 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)，代码/脚本遵循 [MIT License](LICENSE)。
+---
 
-<p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
+## 📄 License
+
+The notes are in [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) format, and the code/scripts are licensed under [the MIT License](../LICENSE) .
+
+<p align="right">(<a href="#technical-notes">Back to top</a>)</p>
