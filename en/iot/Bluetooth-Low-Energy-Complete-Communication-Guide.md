@@ -19,7 +19,7 @@ SPDX-FileCopyrightText: 2026 KY (kyshipit)
 - [V. Authentication (Challenge-Response)](#chapter5-auth)
 - [VI. Command Interaction (Command / Response / TLV / CRC16)](#chapter6-command)
 - [VII. Security Mechanisms (RPA / Replay Attack / Whitelist / IRK / CSRK)](#chapter7-security)
-- [8. Power Consumption and Fault Tolerance (Dynamic Interval / OTA A/B Partition)](#chapter8-power-fault)
+- [VIII. Power Consumption and Fault Tolerance (Dynamic Interval / OTA A/B Partition)](#chapter8-power-fault)
 - [Conclusion](#chapter-conclusion)
 - [appendix](#chapter-appendix)
 
@@ -512,7 +512,7 @@ Whitelist management: Add devices to the whitelist in creation mode; remove devi
 
 <a id="chapter8-power-fault"></a>
 
-## 8. Power Consumption and Fault Tolerance (Dynamic Interval / OTA A/B Partition)
+## VIII. Power Consumption and Fault Tolerance (Dynamic Interval / OTA A/B Partition)
 
 ### 8.1 Dynamic Adjustment of Broadcast Intervals
 
