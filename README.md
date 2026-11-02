@@ -213,6 +213,7 @@
 
 - [eai-rk3588](https://github.com/kyshipit/eai-rk3588) — A plug-in-based RK3588 edge inference platform with multi-threaded pipeline, RKNN adapter, RKLLM dialogue, and coordinator-driven multi-slot activation.
 - [MeloTTS](https://github.com/kyshipit/MeloTTS) — MeloTTS ONNX Export + RKNN Deployment (RK3588), INT8 Quantization and Deployment.
+
 - [ros-robot](https://github.com/kyshipit/ros-robot) — a scalable edge AI robot platform based on ROS2, with built-in YOLO and SCRFD models, and it supports local RKLLM dialogue and text-to-speech (TTS).
 
 <p align="right">(<a href="#technical-notes">Back to top</a>)</p>
@@ -224,6 +225,7 @@ If this is helpful, please give it a Star ⭐ to show your support, thank you!
 ---
 
 ## 📄 License
+
 
 The notes are in [CC BY-SA 4.0](LICENSE-CC-BY-SA) format, and the code/scripts are licensed under [the MIT License](LICENSE-MIT) .
 
