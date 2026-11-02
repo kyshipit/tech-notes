@@ -9,17 +9,6 @@ SPDX-FileCopyrightText: 2026 KY (kyshipit)
 
 > The username, email, repository name, path, and commit ID in this document are placeholders. Please replace `<github-user>` `, `<repo>` `, `<email>` , `<branch>` , and `<commit>` with their actual values.
 
-## Quick Navigation
-
-- [Remember these points first](#%E5%85%88%E8%AE%B0%E4%BD%8F%E8%BF%99%E5%87%A0%E6%9D%A1)
-- [Work area, temporary storage area and warehouse](#%E5%B7%A5%E4%BD%9C%E5%8C%BA%E6%9A%82%E5%AD%98%E5%8C%BA%E4%B8%8E%E4%BB%93%E5%BA%93)
-- [Initialization and Cloning](#%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E5%85%8B%E9%9A%86)
-- [Daily Development Process](#%E6%97%A5%E5%B8%B8%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B)
-- [Cancellation and Resumption](#%E6%92%A4%E9%94%80%E4%B8%8E%E6%81%A2%E5%A4%8D)
-- [Remote Repository and Authentication](#%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E4%B8%8E%E8%AE%A4%E8%AF%81)
-- [Ignore file and newline characters](#%E5%BF%BD%E7%95%A5%E6%96%87%E4%BB%B6%E4%B8%8E%E6%8D%A2%E8%A1%8C%E7%AC%A6)
-- [Troubleshoot common errors](#%E6%8E%92%E6%9F%A5%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)
-- [Tags and Posting](#%E6%A0%87%E7%AD%BE%E4%B8%8E%E5%8F%91%E5%B8%83)
 
 ## Remember these points first
 

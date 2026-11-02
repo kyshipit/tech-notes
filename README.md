@@ -189,15 +189,15 @@
 
 > Project-aided build scripts and environment configuration
 
-- [configure-rootfs.sh](/scripts/configure-rootfs.sh) `#RK3588 #Ubuntu #rootfs #PackagingScript`
+- [configure-rootfs.sh](scripts/configure-rootfs.sh) `#RK3588 #Ubuntu #rootfs #PackagingScript`
 
     > RK3588 is a build and packaging script for Ubuntu 20.04/24.04 rootfs. It supports automatic installation of the rkaiq camera engine deb package extracted from the Buildroot target directory.
 
-- [configure-bashrc](/scripts/configure-bashrc) `#bash #shell #EnvironmentConfiguration`
+- [configure-bashrc](scripts/configure-bashrc) `#bash #shell #EnvironmentConfiguration`
 
     > Bash environment configuration file: intelligent PATH management, locale, history, and shell behavior optimization.
 
-- [configure-vimrc](/scripts/configure-vimrc) `#vim #EditorConfiguration`
+- [configure-vimrc](scripts/configure-vimrc) `#vim #EditorConfiguration`
 
     > Minimal Vim configuration without plugins, retains commonly used keyboard shortcuts, and supports Linux/WSL clipboard.
 
@@ -213,18 +213,18 @@
 
 - [eai-rk3588](https://github.com/kyshipit/eai-rk3588) — A plug-in-based RK3588 edge inference platform with multi-threaded pipeline, RKNN adapter, RKLLM dialogue, and coordinator-driven multi-slot activation.
 - [MeloTTS](https://github.com/kyshipit/MeloTTS) — MeloTTS ONNX Export + RKNN Deployment (RK3588), INT8 Quantization and Deployment.
-- [ros-robot](https://github.com/kyshipit/ros-robot) — a scalable edge AI robot platform based on ROS2, with built-in YOLO and SCRFD models, and supports local RKLLM dialogue and text-to-speech (TTS).
+- [ros-robot](https://github.com/kyshipit/ros-robot) — a scalable edge AI robot platform based on ROS2, with built-in YOLO and SCRFD models, and it supports local RKLLM dialogue and text-to-speech (TTS).
 
 <p align="right">(<a href="#technical-notes">Back to top</a>)</p>
 
 ---
 
-If this was helpful, please give it a Star ⭐ to show your support, thank you!
+If this is helpful, please give it a Star ⭐ to show your support, thank you!
 
 ---
 
 ## 📄 License
 
-The notes are in [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) format, and the code/scripts are licensed under [the MIT License](../LICENSE) .
+The notes are in [CC BY-SA 4.0](LICENSE-CC-BY-SA) format, and the code/scripts are licensed under [the MIT License](LICENSE-MIT) .
 
 <p align="right">(<a href="#technical-notes">Back to top</a>)</p>
