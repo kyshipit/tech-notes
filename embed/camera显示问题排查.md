@@ -1,9 +1,4 @@
-[English](../en/embed/Camera-Display-Troubleshooting.md) | **简体中文**
-
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
+**简体中文** | [English](../en/embed/Camera-Display-Troubleshooting.md)
 
 # RK3588 Ubuntu 移植摄像头显示问题
 

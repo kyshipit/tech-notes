@@ -1,10 +1,5 @@
 **English** | [简体中文](../../iot/蓝牙低功耗完整通信原理解析.md)
 
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
-
 # From loudspeakers to private messages: The principles of Bluetooth Low Energy communication technology
 
 **Disclaimer:** This article is based on the Bluetooth Core Specification, publicly released by the Bluetooth Special Interest Group (Bluetooth SIG). The "typical designs" and "common practices" mentioned are publicly available general engineering practices in the embedded systems and IoT industries, **and do not represent proprietary implementations for any specific product, nor do they constitute a disclosure of product specifications or trade secrets** . This article is not an official SIG document and is for educational purposes only, provided as is (AS-IS).
@@ -19,7 +14,7 @@ SPDX-FileCopyrightText: 2026 KY (kyshipit)
 - [V. Authentication (Challenge-Response)](#chapter5-auth)
 - [VI. Command Interaction (Command / Response / TLV / CRC16)](#chapter6-command)
 - [VII. Security Mechanisms (RPA / Replay Attack / Whitelist / IRK / CSRK)](#chapter7-security)
-- [8. Power Consumption and Fault Tolerance (Dynamic Interval / OTA A/B Partition)](#chapter8-power-fault)
+- [VIII. Power Consumption and Fault Tolerance (Dynamic Interval / OTA A/B Partition)](#chapter8-power-fault)
 - [Conclusion](#chapter-conclusion)
 - [appendix](#chapter-appendix)
 
@@ -512,7 +507,7 @@ Whitelist management: Add devices to the whitelist in creation mode; remove devi
 
 <a id="chapter8-power-fault"></a>
 
-## 8. Power Consumption and Fault Tolerance (Dynamic Interval / OTA A/B Partition)
+## VIII. Power Consumption and Fault Tolerance (Dynamic Interval / OTA A/B Partition)
 
 ### 8.1 Dynamic Adjustment of Broadcast Intervals
 

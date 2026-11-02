@@ -1,10 +1,5 @@
 **English** | [简体中文](../../embed/qemu构建rootfs时systemd锁问题修复.md)
 
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
-
 # Troubleshooting a rootfs error when building an ARM64 Ubuntu 24.04 rootfs on an x86 host machine.
 
 When building an ARM64 Ubuntu 24.04 rootfs on an x86 host machine, the systemd postinst script failed because qemu-user-static did not support OFD locks. This was resolved by upgrading QEMU to 8.0.x.

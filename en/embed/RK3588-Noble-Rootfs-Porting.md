@@ -1,10 +1,5 @@
 **English** | [简体中文](../../embed/rk3588移植noble版本rootfs.md)
 
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
-
 # Complete porting of Ubuntu 24.04 (Noble)
 
 ## I. Environmental Preparation
@@ -24,7 +19,7 @@ mkdir-p ~/ubuntu_rootfs
 sudo debootstrap --foreign --arch=arm64 noble ~/ubuntu_rootfs http://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/
 ```
 
-## III. Mounting **+ Second Stage**
+## III. Mounting + Second Stage
 
 ```
 ROOTFS="$HOME/ubuntu_rootfs"

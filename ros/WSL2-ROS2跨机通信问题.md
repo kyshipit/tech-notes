@@ -1,9 +1,4 @@
-[English](../en/ros/WSL2-ROS2-Cross-Machine-Communication.md) | **简体中文**
-
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
+**简体中文** | [English](../en/ros/WSL2-ROS2-Cross-Machine-Communication.md)
 
 # WSL2 默认 NAT 模式与 ROS2 Fast DDS UDP 多播发现不兼容问题的排查与解决
 

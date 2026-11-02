@@ -1,9 +1,4 @@
-[English](../en/iot/CAN-UDS-Automotive-Diagnostic-Technical-Guide.md) | **简体中文**
-
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
+**简体中文** | [English](../en/iot/CAN-UDS-Automotive-Diagnostic-Technical-Guide.md)
 
 # 一、CAN 总线
 

@@ -1,9 +1,4 @@
-[English](../en/embed/QEMU-Rootfs-Build-Systemd-Lock-Fix.md) | **简体中文**
-
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
+**简体中文** | [English](../en/embed/QEMU-Rootfs-Build-Systemd-Lock-Fix.md)
 
 # x86 宿主机构建 ARM64 Ubuntu 24\.04 rootfs 报错解决记录
 

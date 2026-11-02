@@ -1,10 +1,5 @@
 **English** | [简体中文](../../iot/NFC技术原理与汽车钥匙应用.md)
 
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
-
 # NFC Technology Principles and Car Key Applications: A Complete Explanation from Hardware to Protocol
 
 ## Chapter 1 Statement
