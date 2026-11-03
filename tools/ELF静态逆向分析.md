@@ -1,9 +1,4 @@
-[English](../en/tools/ELF-Static-Reverse-Engineering-Analysis.md) | **简体中文**
-
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
+**简体中文** | [English](../en/tools/ELF-Static-Reverse-Engineering-Analysis.md)
 
 # 第一篇：ELF静态逆向分析——Ghidra从安装到反编译重建源码
 

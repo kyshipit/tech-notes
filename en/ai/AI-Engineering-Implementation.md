@@ -1,10 +1,5 @@
 **English** | [简体中文](../../ai/AI工程落地相关.md)
 
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
-
 # AI engineering implementation related
 
 # Part 1: Overall Cognitive Framework of AI

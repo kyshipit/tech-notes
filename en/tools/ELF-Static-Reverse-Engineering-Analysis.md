@@ -1,10 +1,5 @@
 **English** | [简体中文](../../tools/ELF静态逆向分析.md)
 
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
-
 # Part 1: ELF Static Reverse Engineering – Ghidra from Installation to Decompilation and Reconstruction of Source Code
 
 > **Applicable scenarios** : You only have a binary executable file, no source code, and want to figure out what the program does, or even recover logic close to the source code.

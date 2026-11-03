@@ -1,10 +1,5 @@
 **English** | [简体中文](../../deploy/RKNPU模型量化部署原理手册.md)
 
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
-
 # RK3588 Model Quantization Deployment Principle Manual
 
 **—From ONNX to NPU instructions, what does the compiler do internally, how are parameters configured, and why?**

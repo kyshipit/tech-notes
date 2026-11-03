@@ -1,10 +1,5 @@
 **English** | [简体中文](../../tools/GDB动态调试指南.md)
 
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
-
 # Part Two: A Complete Guide to GDB Dynamic Debugging—From Coredump Analysis to Active Debugging
 
 > **Applicable scenarios:**

@@ -1,10 +1,5 @@
 **English** | [简体中文](../../iot/蓝牙低功耗完整通信原理解析.md)
 
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
-
 # From loudspeakers to private messages: The principles of Bluetooth Low Energy communication technology
 
 **Disclaimer:** This article is based on the Bluetooth Core Specification, publicly released by the Bluetooth Special Interest Group (Bluetooth SIG). The "typical designs" and "common practices" mentioned are publicly available general engineering practices in the embedded systems and IoT industries, **and do not represent proprietary implementations for any specific product, nor do they constitute a disclosure of product specifications or trade secrets** . This article is not an official SIG document and is for educational purposes only, provided as is (AS-IS).

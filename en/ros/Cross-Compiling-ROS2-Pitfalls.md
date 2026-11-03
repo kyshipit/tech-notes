@@ -1,10 +1,5 @@
 **English** | [简体中文](../../ros/交叉编译ROS2踩坑记录.md)
 
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
-
 # Cross-compiling ROS2 Jazzy to ARM64 from x86: Getting it working from scratch + Troubleshooting Experience
 
 ## I. Why do we need to cross-compile on x86 computers?

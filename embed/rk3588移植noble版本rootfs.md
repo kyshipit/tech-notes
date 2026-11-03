@@ -1,9 +1,4 @@
-[English](../en/embed/RK3588-Noble-Rootfs-Porting.md) | **简体中文**
-
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
+**简体中文** | [English](../en/embed/RK3588-Noble-Rootfs-Porting.md)
 
 # Ubuntu 24.04 (Noble) 完整移植
 

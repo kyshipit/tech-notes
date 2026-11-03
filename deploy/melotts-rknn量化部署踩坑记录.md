@@ -1,9 +1,4 @@
-[English](../en/deploy/MeloTTS-RKNN-Quantization-Deployment-Pitfalls.md) | **简体中文**
-
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
+**简体中文** | [English](../en/deploy/MeloTTS-RKNN-Quantization-Deployment-Pitfalls.md)
 
 # MeloTTS RKNN 量化部署踩坑记录
 

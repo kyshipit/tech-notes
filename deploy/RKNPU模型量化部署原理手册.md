@@ -1,9 +1,4 @@
-[English](../en/deploy/RKNPU-Model-Quantization-Deployment-Principles.md) | **简体中文**
-
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
+**简体中文** | [English](../en/deploy/RKNPU-Model-Quantization-Deployment-Principles.md)
 
 # RK3588 模型量化部署原理手册
 

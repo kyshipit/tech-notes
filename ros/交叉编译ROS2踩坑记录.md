@@ -1,9 +1,4 @@
-[English](../en/ros/Cross-Compiling-ROS2-Pitfalls.md) | **简体中文**
-
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
+**简体中文** | [English](../en/ros/Cross-Compiling-ROS2-Pitfalls.md)
 
 # x86 交叉编译 ROS2 Jazzy 到 ARM64：从零跑通 + 踩坑实录
 

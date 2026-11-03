@@ -1,9 +1,4 @@
-[English](../en/ai/AI-Engineering-Implementation.md) | **简体中文**
-
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-SPDX-FileCopyrightText: 2026 KY (kyshipit)
--->
+**简体中文** | [English](../en/ai/AI-Engineering-Implementation.md)
 
 # AI工程落地相关
 
