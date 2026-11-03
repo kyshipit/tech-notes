@@ -9,8 +9,21 @@ SPDX-FileCopyrightText: 2026 KY (kyshipit)
 
 > The username, email, repository name, path, and commit ID in this document are placeholders. Please replace `<github-user>` `, `<repo>` `, `<email>` , `<branch>` , and `<commit>` with their actual values.
 
+## Quick Navigation
 
-## Remember these points first
+- [1. Key Points to Remember](#1-key-points-to-remember)
+- [2. Working Directory, Staging Area & Repository](#2-working-directory-staging-area--repository)
+- [3. Initialization and Cloning](#3-initialization-and-cloning)
+- [4. Daily Development Workflow](#4-daily-development-workflow)
+- [5. Undo and Restore](#5-undo-and-restore)
+- [6. Remote Repository and Authentication](#6-remote-repository-and-authentication)
+- [7. Ignore Files and Line Endings](#7-ignore-files-and-line-endings)
+- [8. Troubleshooting Common Errors](#8-troubleshooting-common-errors)
+- [9. Tags and Releases](#9-tags-and-releases)
+
+
+
+## 1. Key Points to Remember
 
 1. Before performing deletion, reset, rebase, or forced push, run `git status` , and if necessary, run `git diff` and `git log` .
 2. Development takes place on feature branches, while `main` is used for stabilizing code and releasing. If team strategies differ, the team's established guidelines will prevail.
@@ -19,7 +32,7 @@ SPDX-FileCopyrightText: 2026 KY (kyshipit)
 5. After a rebase or amend has been pushed, use `git push --force-with-lease` only if you are sure you are not overwriting someone else's work. Try to avoid using `--force` .
 6. When there are already collaborators in the remote repository, prioritize using Pull Requests and avoid directly rewriting the shared branch history.
 
-## Work area, temporary storage area and warehouse
+## 2. Working Directory, Staging Area & Repository
 
 Git can be simply understood as having three layers:
 
@@ -46,7 +59,7 @@ View brief history | `git log --oneline --graph --decorate --all`
 View a specific submission | `git show <commit>`
 View reference movement history | `git reflog`
 
-## Initialization and Cloning
+## 3. Initialization and Cloning
 
 ### Create a repository from the local directory
 
@@ -91,7 +104,7 @@ git remote -v
 git remote set-url origin git@github.com:<github-user>/<repo>.git
 ```
 
-## Daily Development Process
+## 4. Daily Development Workflow
 
 ### Create feature branches
 
@@ -161,7 +174,7 @@ git push origin --delete feature/<short-name>
 
 If the team uses GitHub Pull Requests, they should push the feature branch and then review and merge it on the webpage, rather than merging it directly into `main` locally.
 
-## Cancellation and Resumption
+## 5. Undo and Restore
 
 ### Work area and temporary storage area
 
@@ -223,7 +236,7 @@ instruction | effect
 `fixup` | Merge commits and discard current commit information
 `drop` | Delete submissions and their modifications
 
-## Remote Repository and Authentication
+## 6. Remote Repository and Authentication
 
 ### HTTPS and SSH
 
@@ -285,7 +298,7 @@ git config --list --show-origin
 
 Do not blindly set `http.postBuffer` just because of slow network speeds; it usually does not solve network or server problems. You should first check your proxy, network, remote address, and authentication method.
 
-## Ignore file and newline characters
+## 7. Ignore Files and Line Endings
 
 ### `.gitignore`
 
@@ -345,7 +358,7 @@ Cross-platform projects can be added to the root directory:
 
 After adding `.gitattributes` file, whether to refresh the entire index should be considered in conjunction with the size of the repository and team collaboration arrangements to avoid direct copying commands that could cause large-scale irrelevant diffs.
 
-## Troubleshoot common errors
+## 8. Troubleshooting Common Errors
 
 ### `src refspec <branch> does not match any`
 
@@ -417,7 +430,7 @@ git clean -fd      # 确认无误后删除文件和目录
 
 `git clean` does not delete tracked files, but deleted untracked content is usually unrecoverable via Git.
 
-## Tags and Posting
+## 9. Tags and Releases
 
 The `&lt;sub&gt;` tag is used to mark a submission, while `Release` is the release page provided by the hosting platform; the two are not the same object.
 
