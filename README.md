@@ -10,7 +10,7 @@
   <a href="#embedded">Embedded</a> ·
   <a href="#iot">IoT</a> ·
   <a href="#tools">Tools</a> ·
-  <a href="#scripts">Scripts</a> ·
+  <a href="#language">Language</a> ·
   <a href="#repos">Repos</a>
 </p>
 </div>
@@ -77,22 +77,24 @@
 
 ## Tools
 
-> Debugging Tools | Disassembler | Reverse Engineering
+> Debugging Tools | Reverse Engineering | Build Scripts | Environment configuration
 
 - [ELF Static Reverse Engineering: File Structure & Analysis Workflow](en/tools/ELF-Static-Reverse-Engineering-Analysis.md)
 - [GDB Dynamic Debugging Guide: Commands, Breakpoints & Memory Checks](en/tools/GDB-Dynamic-Debugging-Guide.md)
 - [Git Common Operations: Branch Management, Conflict Resolution & Security](en/tools/Git-Common-Operations-and-Security-Practices.md)
+- [configure-rootfs.sh: RK3588 Ubuntu Rootfs Build & Packaging](en/tools/configure-rootfs.sh)
+- [configure-bashrc: Bash Environment & PATH Configuration](en/tools/configure-bashrc)
+- [configure-vimrc: Minimal Vim Configuration for Linux/WSL](en/tools/configure-vimrc)
 
 
-<a id="scripts"></a>
+<a id="language"></a>
 
-## Scripts
+## Language
 
-> Project-aided build scripts and environment configuration
+> Syntax | Memory Model | Concurrency | Compile
 
-- [configure-rootfs.sh: RK3588 Ubuntu Rootfs Build & Packaging](scripts/configure-rootfs.sh)
-- [configure-bashrc: Bash Environment & PATH Configuration](scripts/configure-bashrc)
-- [configure-vimrc: Minimal Vim Configuration for Linux/WSL](scripts/configure-vimrc)
+- [Referencing External Types in C Header Files: Complete Decisions for typedef, struct and include](en/language/C-Header-Struct-External-Type-Reference.md)
+
 
 
 <a id="repos"></a>

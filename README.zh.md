@@ -10,7 +10,7 @@
   <a href="#嵌入式">嵌入式</a> ·
   <a href="#IoT">IoT</a> ·
   <a href="#工具">工具</a> ·
-  <a href="#脚本">脚本</a> ·
+  <a href="#编程">编程</a> ·
   <a href="#个人仓">个人仓</a>
 </p>
 </div>
@@ -65,20 +65,20 @@
 
 <a id="工具"></a>
 ## 工具
-> 调试工具 | 反汇编 | 逆向分析
+> 调试工具 | 反汇编 | 逆向分析 | 脚本
 
 - [ELF 静态逆向分析：文件结构与 Ghidra/radare2 分析流程](tools/ELF静态逆向分析.md)
 - [GDB 动态调试：命令速查、断点设置与内存检查](tools/GDB动态调试指南.md)
 - [Git 常用操作：分支管理、冲突解决与安全实践](tools/Git常用操作与安全实践.md)
+- [configure-rootfs.sh：RK3588 Ubuntu Rootfs 构建与打包脚本](tools/configure-rootfs.sh)
+- [configure-bashrc：Bash 环境与智能 PATH 管理配置](tools/configure-bashrc)
+- [configure-vimrc：极简无插件 Vim 配置（支持 WSL 剪贴板）](tools/configure-vimrc)
 
+<a id="编程"></a>
+## 编程
+> 编程语言 | 内存 | 并发 | 编译
 
-<a id="脚本"></a>
-## 脚本
-> 项目辅助构建脚本与环境配置
-
-- [configure-rootfs.sh：RK3588 Ubuntu Rootfs 构建与打包脚本](scripts/configure-rootfs.sh)
-- [configure-bashrc：Bash 环境与智能 PATH 管理配置](scripts/configure-bashrc)
-- [configure-vimrc：极简无插件 Vim 配置（支持 WSL 剪贴板）](scripts/configure-vimrc)
+- [C 头文件引用外部类型：typedef、struct 与 include 的完整决策](language/C头文件结构体外部类型引用.md)
 
 
 <a id="个人仓"></a>
