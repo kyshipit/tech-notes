@@ -1,0 +1,219 @@
+#!/bin/bash
+# vim: syntax=sh
+
+# 当前语言环境
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+
+# 基础环境变量
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export EDITOR=vim
+export VISUAL=vim
+
+# 智能 PATH 设置
+add_to_path() {
+    [[ ":$PATH:" != *":$1:"* ]] && [[ -d "$1" ]] && export PATH="$1:$PATH"
+}
+add_to_path "$HOME/tools/bin"
+[[ -n "$JAVA_HOME" ]] && add_to_path "$JAVA_HOME/bin"
+add_to_path "$HOME/.local/bin"
+
+# 保护层
+[[ -n "${BASHRC_LOADED:-}" ]] && return
+BASHRC_LOADED=1
+[[ $- != *i* ]] && return
+
+# Shell 行为配置
+HISTSIZE=2000
+HISTFILESIZE=5000
+HISTCONTROL=ignoredups:erasedups
+shopt -s histappend checkwinsize
+
+# ========== 别名 ==========
+alias ls='eza --color=auto --classify=auto'
+alias l='eza -1 --color=auto --classify=auto'
+alias ll='eza -1a  --header  --color=auto --classify=auto'
+alias la='eza -la  --header --time-style=long-iso --color=auto --classify=auto'
+alias lh='eza -lh  --header --time-style=long-iso --color=auto --classify=auto'
+alias lt='eza -l --sort=modified -r --time-style=long-iso --color=auto --classify=auto'
+alias lsize='eza -l --sort=size -r --color=auto --classify=auto'
+alias lr='eza -laR --color=auto --classify=auto'
+ltree() {
+    eza -T --level="${2:-2}" --color=auto --classify=auto "${1:-.}"
+}
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias rm='rm -I'
+alias cp='cp -i'
+alias mv='mv -i'
+alias mkdir='mkdir -p'
+alias df='df -h'
+alias du='du -h'
+alias free='free -h'
+alias psg='ps aux | grep -v grep | grep -i'
+alias py='python3'
+alias pip='pip3'
+alias python='python3'
+
+# Git 完整工作流别名
+alias gs='git status'
+alias ga='git add'
+alias gaa='git add --all'
+alias gc='git commit'
+alias gcm='git commit -m'
+alias gca='git commit --amend'
+alias gcan='git commit --amend --no-edit'
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gb='git branch'
+alias gba='git branch -a'
+alias gbd='git branch -d'
+alias gl='git log --oneline --graph --decorate -20'
+alias gla='git log --oneline --graph --decorate --exclude=refs/notes/* --all'
+alias gln='git log --oneline --graph --notes'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias gp='git push'
+alias gpf='git push --force-with-lease'
+alias gpl='git pull'
+alias gpr='git pull --rebase'
+alias gst='git stash'
+alias gstp='git stash pop'
+alias gstl='git stash list'
+alias gr='git remote -v'
+alias gf='git fetch --all'
+
+# ========== 专业函数 ==========
+mkcd() { mkdir -p "$1" && cd "$1"; }
+findd() { find . -type d -name "*$1*" 2>/dev/null; }
+grepf() { find . -type f -exec grep -l "$1" {} + 2>/dev/null; }
+bak() { cp "$1" "$1.$(date +%Y%m%d_%H%M%S).bak"; }
+dsize() { du -sh -- * | sort -hr; }
+count() { find . -type f -name "*.$1" | wc -l; }
+
+dif() {
+    if command -v diff-so-fancy &>/dev/null; then
+        diff -u "$1" "$2" | diff-so-fancy
+    else
+        diff -u "$1" "$2"
+    fi
+}
+
+serve() {
+    local port=${1:-8000}
+    echo "Starting HTTP server on port $port"
+    python3 -m http.server "$port"
+}
+
+loc() {
+    find . -name "*.$1" -type f -exec cat {} + | wc -l
+}
+
+timestamp() {
+    if [ -z "$1" ]; then
+        echo "用法: timestamp <unix_timestamp>"
+        echo "当前时间戳: $(date +%s)"
+    else
+        date -d @"$1" +"对应 %Y-%m-%d %H:%M:%S %Z"
+    fi
+}
+
+zipd() { zip -r "$1.zip" "$1" -x "$1.zip"; }
+extract() {
+    if [ -f "$1" ]; then
+        echo "正在解压: $1"
+        case "$1" in
+            *.tar|*.tar.gz|*.tar.bz2|*.tar.xz|*.tar.Z|*.tgz|*.tbz2) tar xvf "$1" ;;
+            *.bz2)   bunzip2 -v "$1" ;;
+            *.gz)    gunzip -v "$1" ;;
+            *.rar)   unrar x "$1" ;;
+            *.zip)   unzip "$1" ;;
+            *.7z)    7z x "$1" ;;
+            *.deb)   ar xv "$1" && tar xvf data.tar.* ;;
+            *.Z)     uncompress -v "$1" ;;
+            *.xz)    unxz -v "$1" ;;
+            *)       echo "无法解压: $1" ;;
+        esac
+    else
+        echo "文件不存在: $1"
+    fi
+}
+
+# =========== dircolors ============
+if command -v dircolors >/dev/null 2>&1; then
+    if [[ -f ~/.dircolors ]]; then
+        eval "$(dircolors -b ~/.dircolors)"
+    else
+        eval "$(dircolors -b)"
+    fi
+fi
+
+# 智能 CD 命令
+cd() {
+    builtin cd "$@" || return
+    [[ $PWD != "$HOME" ]] && ls
+    return 0
+}
+
+[[ -f ~/.bash_prompt ]] && source ~/.bash_prompt
+
+# ==========================================
+# ~/.bash_prompt
+# 颜色定义、Git 信息、Conda 环境、提示符生成
+# ==========================================
+
+# ---------- 颜色定义 ----------
+PS_RED='\[\033[0;31m\]'
+PS_GREEN='\[\033[0;32m\]'
+PS_YELLOW='\[\033[0;33m\]'
+PS_BLUE='\[\033[0;34m\]'
+PS_MAGENTA='\[\033[0;35m\]'
+PS_CYAN='\[\033[0;36m\]'
+PS_BOLD='\[\033[1m\]'
+PS_RESET='\[\033[0m\]'
+
+# ---------- Git 信息（分支 + 状态符号 +*%） ----------
+git_info() {
+    local branch staged modified untracked
+    branch=$(git symbolic-ref --short HEAD 2>/dev/null) || branch=$(git rev-parse --short HEAD 2>/dev/null)
+    [[ -z "$branch" ]] && return
+    if git diff --quiet --cached 2>/dev/null; then staged=""; else staged="+"; fi
+    if git diff --quiet 2>/dev/null; then modified=""; else modified="*"; fi
+    if git ls-files --others --exclude-standard 2>/dev/null | grep -q .; then untracked="%"; else untracked=""; fi
+    local status_flags="${staged}${modified}${untracked}"
+    [[ -n "$status_flags" ]] && status_flags=" ${status_flags}"
+    echo "${PS_MAGENTA}(${branch}${status_flags})${PS_RESET}"
+}
+
+# ---------- Conda 环境（带括号） ----------
+conda_info() {
+    if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
+        echo " ${PS_CYAN}(${CONDA_DEFAULT_ENV})${PS_RESET}"
+    fi
+}
+
+# ---------- venv 环境（带括号） ----------
+venv_info() {
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        local env_name=$(basename "$VIRTUAL_ENV")
+        echo " ${PS_CYAN}(${env_name})${PS_RESET}"
+    fi
+}
+
+# ---------- 提示符生成函数 ----------
+prompt_command() {
+    local time_stamp="${PS_YELLOW}\t${PS_RESET}"
+    local user_host="${PS_BOLD}${PS_GREEN}\u@\h${PS_RESET}"
+    local path="${PS_BLUE}\w${PS_RESET}"
+    local git_str="$(git_info)"
+    local conda_str="$(conda_info)"
+    local venv_str="$(venv_info)"
+    
+    PS1="${time_stamp} ${user_host}:${path}${git_str}${conda_str}${venv_str}\n${PS_GREEN}➜${PS_RESET} "
+}
+
+# ---------- 挂载到 PROMPT_COMMAND ------------
+PROMPT_COMMAND="history -a; history -n; prompt_command"
