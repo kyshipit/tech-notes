@@ -91,9 +91,10 @@
 
 ## Language
 
-> Syntax | Memory Model | Concurrency | Compile
+> Programming language | Memory Model | Concurrency | Compile
 
 - [Referencing External Types in C Header Files: Complete Decisions for typedef, struct and include](en/language/C-Header-Struct-External-Type-Reference.md)
+- [C++ Smart Pointers: Three Ownership Semantics and Raw-Pointer Pitfalls](en/language/Cpp-Smart-Pointer-Ownership-Semantics.md)
 
 
 

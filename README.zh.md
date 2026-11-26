@@ -79,6 +79,7 @@
 > 编程语言 | 内存 | 并发 | 编译
 
 - [C 头文件引用外部类型：typedef、struct 与 include 的完整决策](language/C头文件结构体外部类型引用.md)
+- [C++ 智能指针：从裸指针问题到 unique_ptr/shared_ptr/weak_ptr 的所有权语义](language/Cpp智能指针所有权语义.md)
 
 
 <a id="个人仓"></a>
