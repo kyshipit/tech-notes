@@ -89,7 +89,7 @@
 - [eai-rk3588：多线程流水线的 RK3588 边缘推理平台](https://github.com/kyshipit/eai-rk3588)
 - [MeloTTS：ONNX 导出与 RK3588 RKNN 部署及 INT8 量化实践](https://github.com/kyshipit/MeloTTS)
 - [mbot-sim：ROS 2 Jazzy 仿真导航验证（已归档）](https://github.com/kyshipit/mbot-sim)
-- [gh-heatmap-generator：GitHub 可视化热力图贡献脚本生成器](https://github.com/kyshipit/gh-heatmap-generator)
+- [gh-painter：GitHub 可视化热力图贡献脚本生成器](https://github.com/kyshipit/gh-painter)
 
 <p align="right">(<a href="#技术笔记">返回顶部</a>)</p>
 
